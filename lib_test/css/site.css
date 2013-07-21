@@ -1,0 +1,39 @@
+@import url(http://fonts.googleapis.com/css?family=Domine|Magra);
+body {
+  font-family: "Domine";
+}
+
+h1,h2,h3,h4,h5,h6 {
+  font-family: "Magra";
+}
+
+p {
+  text-align: justify;
+}
+
+a {
+  color: #333399;
+}
+
+a:hover {
+  color: #333333;
+  border-bottom: 1px dotted #999999;
+  display: inline;
+}
+
+body {
+  background-image: url(/images/cloud-bg.png);
+  background-repeat: repeat-x;
+}
+
+.button {
+  font-family: "Magra";
+  background-color: #999999;
+  border-color: #555555;
+}
+
+pre {
+  margin-bottom: 15px;
+  padding: 10px;
+  background: #cccccc;
+}

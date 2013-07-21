@@ -10,9 +10,9 @@ let read_entry ent =
 
 let config = { 
   Blog.base_uri="http://localhost:8081";
-  title="Blog";
-  subtitle=Some "musings on OpenMirage development";
-  rights=Mirage_people.rights;
+  title = "OpenMirage";
+  subtitle = Some "the development blog";
+  rights = Mirage_people.rights;
   read_entry
 }
 
