@@ -35,12 +35,12 @@ let bottom_nav (links:links) =
   let links = List.map link links in
   mk_ul_links ~cl:"inline-list right" ~links
 
-let post ~title ~author ~content =
+let post ~title ~author ~date ~content =
   let (title_text, title_uri) = title in
   <:html<
   <article>
     <h3><a href=$uri:title_uri$>$str:title_text$</a></h3>
-    <h6>Written by $link author$ on August 12, 2012.</h6>
+    <h6>Written by $link author$ on $date$.</h6>
     $content$
   </article>
  >>

@@ -20,7 +20,6 @@ type links = link list
 
 val link : ?cl:string -> link -> Cow.Xml.t
 
-
 val mk_ul_links : cl:string -> links:('a Cow.Xml.frag as 'a) list list -> Cow.Xml.t
 
 val button_group : links -> Cow.Xml.t
@@ -31,7 +30,9 @@ val bottom_nav : links -> Cow.Xml.t
 
 val post :
   title:string * Uri.t ->
-  author:string * Uri.t -> content:('a Cow.Xml.frag as 'a) list -> Cow.Xml.t
+  author:string * Uri.t ->
+  date:Cow.Html.t -> 
+  content:('a Cow.Xml.frag as 'a) list -> Cow.Xml.t
 
 val t :
   title:Cow.Xml.t ->

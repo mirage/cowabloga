@@ -4,7 +4,8 @@ let post1 =
   let title = "Blog Post 1", Uri.of_string "/post1" in
   let author = "Anil Madhavapeddy", (Uri.of_string "http://anil.recoil.org") in
   let content = <:html<<p>Florble</p><p>Wibble</p>&>> in
-  Blog_template.post ~title ~author ~content
+  let date = <:html<12th August 2013>> in
+  Blog_template.post ~title ~author ~date ~content
 
 let t =
   let title = <:html<My test website>> in
