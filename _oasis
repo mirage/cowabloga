@@ -1,0 +1,23 @@
+OASISFormat: 0.3
+Name:        cowabloga
+Version:     1.0
+Synopsis:    Blog templates using Cow
+Authors:     Anil Madhavapeddy
+License:     ISC
+Plugins:     META (0.3), DevFiles (0.3)
+BuildTools:  ocamlbuild
+
+Library cowabloga
+  Path: lib
+  Findlibname: cowabloga
+  Pack: true
+  Modules: Blog_template, Foundation
+  BuildDepends:	cow, cow.syntax, lwt
+
+Executable cowabloga_test
+  Path: lib_test
+  MainIs: serve.ml
+  Custom:             true
+  CompiledObject:     best
+  Install:            false
+  BuildDepends:       cohttp.lwt, cowabloga, cow.syntax
