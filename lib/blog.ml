@@ -20,6 +20,8 @@ open Lwt
 open Cow
 
 type feed = {
+  title      : string;
+  subtitle   : string option;
   base_uri   : string;
   rights     : string option;
   read_entry : string -> Cow.Html.t Lwt.t;
@@ -34,7 +36,7 @@ type entry = {
 }
 
 (* Convert a blog record into an Html.t fragment *)
-let html_of_entry {read_entry;base_uri} e =
+let entry_to_html {read_entry;base_uri} e =
   read_entry e.body
   >>= fun content ->
   let permalink = Uri.of_string (sprintf "%s/blog/%s" base_uri e.permalink) in
@@ -50,7 +52,7 @@ let html_of_entry {read_entry;base_uri} e =
   let post = Blog_template.post ~title ~date ~author ~content in
   return post
 
-let atom_entry_of_ent {base_uri; read_entry} e =
+let entry_to_atom {base_uri; read_entry} e =
   let permalink e = sprintf "%s/%s" base_uri e.permalink in
   let links = [
     Atom.mk_link ~rel:`alternate ~typ:"text/html"
@@ -72,22 +74,34 @@ let atom_entry_of_ent {base_uri; read_entry} e =
     summary    = None;
     content
   }
-  
+
 let cmp_ent a b =
-  compare (Date.atom_date a.updated) (Date.atom_date b.updated)
+  compare (Date.atom_date b.updated) (Date.atom_date a.updated)
+
+(** Entries separated by <hr /> tags *)
+let default_entry_separator = <:html<<hr />&>>
+let entries_to_html ?(sep=default_entry_separator) cfg entries =
+  let rec concat = function
+    | []     -> return <:html<&>>
+    | hd::tl ->
+       entry_to_html cfg hd
+       >>= fun hd ->
+       concat tl
+       >|= fun tl -> <:html<$hd$$sep$$tl$>>
+  in
+  concat (List.sort cmp_ent entries)
+    
 
 let atom_feed cfg es =
-  let { base_uri; rights } = cfg in
+  let { base_uri; rights; title; subtitle } = cfg in
   let mk_uri uri = Uri.of_string (sprintf "%s/%s" base_uri uri) in
-  let es = List.rev (List.sort cmp_ent es) in
+  let es = List.sort cmp_ent es in
   let updated = Date.atom_date (List.hd es).updated in
   let id = "/blog/" in
-  let title = "openmirage blog" in
-  let subtitle = Some "a cloud operating system" in
   let links = [
     Atom.mk_link (mk_uri "blog/atom.xml");
     Atom.mk_link ~rel:`alternate ~typ:"text/html" (mk_uri "blog/")
   ] in
   let feed = { Atom.id; title; subtitle; author=None; rights; updated; links } in
-  Lwt_list.map_s (atom_entry_of_ent cfg) es
+  Lwt_list.map_s (entry_to_atom cfg) es
   >>= fun entries -> return { Atom.feed=feed; entries }

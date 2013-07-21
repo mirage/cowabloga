@@ -32,11 +32,12 @@ val post :
   title:string * Uri.t ->
   author:string * Uri.t ->
   date:Cow.Html.t -> 
-  content:('a Cow.Xml.frag as 'a) list -> Cow.Xml.t
+  content:Cow.Html.t -> Cow.Html.t
 
 val t :
-  title:Cow.Xml.t ->
+  title:string ->
+  subtitle:string option ->
   nav_links:links ->
   side_links:links ->
-  posts:('a Cow.Xml.frag as 'a) Cow.Xml.frag list list ->
+  posts:('a Cow.Xml.frag as 'a) Cow.Xml.frag list ->
   copyright:'a Cow.Xml.frag list -> unit -> Cow.Xml.t

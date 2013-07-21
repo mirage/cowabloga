@@ -45,12 +45,17 @@ let post ~title ~author ~date ~content =
   </article>
  >>
 
-let t ~title ~nav_links ~side_links ~posts ~copyright() =
+let t ~title ~subtitle ~nav_links ~side_links ~posts ~copyright() =
+  let subtitle =
+    match subtitle with
+    | None -> <:html<&>>
+    | Some s -> <:html<<small>$str:s$</small>&>>
+  in
   <:html<
   <div class="row">
     <div class="large-12 columns">
       <div class="nav-bar right">$button_group nav_links$</div>
-      <h1>Blog <small>$title$</small></h1>
+      <h1>$str:title$ $subtitle$</h1>
       <hr />
     </div>
   </div>
@@ -59,7 +64,7 @@ let t ~title ~nav_links ~side_links ~posts ~copyright() =
   <div class="row">
     <!-- Main Blog Content -->
     <div class="large-9 columns" role="content">
-      $list:posts$
+      $posts$
     </div>
     <!-- End Main Content -->
  
