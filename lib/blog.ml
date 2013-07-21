@@ -91,7 +91,6 @@ let entries_to_html ?(sep=default_entry_separator) cfg entries =
   in
   concat (List.sort cmp_ent entries)
     
-
 let atom_feed cfg es =
   let { base_uri; rights; title; subtitle } = cfg in
   let mk_uri uri = Uri.of_string (sprintf "%s/%s" base_uri uri) in
