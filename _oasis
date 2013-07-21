@@ -11,7 +11,7 @@ Library cowabloga
   Path: lib
   Findlibname: cowabloga
   Pack: true
-  Modules: Blog_template, Foundation
+  Modules: Blog_template, Foundation, Date, Blog
   BuildDepends:	cow, cow.syntax, lwt
 
 Executable cowabloga_test
