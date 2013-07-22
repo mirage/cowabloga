@@ -45,7 +45,31 @@ let post ~title ~author ~date ~content =
   </article>
  >>
 
-let t ~title ~subtitle ~nav_links ~side_links ~posts ~copyright() =
+module Sidebar = struct
+  type t = [ 
+   | `link of link
+   | `active_link of link
+   | `divider
+  ]
+
+  let t ~title ~content =
+    let to_html =
+      function
+      |`link l -> <:html<<li>$link l$</li>&>>
+      |`active_link l -> <:html<<li class="active">$link l$</li>&>>
+      |`divider -> <:html<<li class="divider" />&>>
+    in
+    let rec make = function
+      |[] -> Cow.Html.nil
+      |hd::tl -> <:html<$to_html hd$$make tl$>> in
+    <:html<<h5>$str:title$</h5>
+    <ul class="side-nav">
+    $make content$
+    </ul>
+     >>
+end
+          
+let t ~title ~subtitle ~nav_links ~sidebar ~posts ~copyright() =
   let subtitle =
     match subtitle with
     | None -> <:html<&>>
@@ -70,8 +94,7 @@ let t ~title ~subtitle ~nav_links ~side_links ~posts ~copyright() =
  
     <!-- Sidebar -->
     <aside class="large-3 columns">
-      <h5>Categories</h5>
-      $side_nav side_links$
+      $sidebar$
     </aside>
     <!-- End Sidebar -->
   </div>

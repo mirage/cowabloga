@@ -26,10 +26,11 @@ let t =
     "blog",    uri "/blog";
     "contact", uri "/contact" ]
   in
-  let side_links = Blog.recent_posts config Mirage_blog.entries in
+  let recent_posts = Blog.recent_posts config Mirage_blog.entries in
+  let sidebar = Blog_template.Sidebar.t ~title:"Recent Posts" ~content:recent_posts in
   let copyright = <:html<Anil Madhavapeddy>> in
   let { Blog.title; subtitle } = config in
-  Blog_template.t ~title ~subtitle ~nav_links ~side_links ~posts ~copyright ()
+  Blog_template.t ~title ~subtitle ~nav_links ~sidebar ~posts ~copyright ()
 
 let blog =
   let body = Foundation.body ~title:"Mirage Musings" ~content:t in

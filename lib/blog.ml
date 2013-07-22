@@ -106,7 +106,13 @@ let atom_feed cfg es =
   Lwt_list.map_s (entry_to_atom cfg) es
   >>= fun entries -> return { Atom.feed=feed; entries }
 
-let recent_posts cfg es =
+let recent_posts ?(active="") cfg es =
   let es = List.sort cmp_ent es in
-  List.map (fun e -> e.subject, Uri.of_string (permalink cfg e)) es
-
+  List.map (fun e ->
+    let link = e.subject, Uri.of_string (permalink cfg e) in
+    if e.subject = active then
+      `active_link link
+    else
+      `link link
+  ) es
+ 

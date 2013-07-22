@@ -38,6 +38,16 @@ val t :
   title:string ->
   subtitle:string option ->
   nav_links:links ->
-  side_links:links ->
+  sidebar: Cow.Xml.t ->
   posts:('a Cow.Xml.frag as 'a) Cow.Xml.frag list ->
   copyright:'a Cow.Xml.frag list -> unit -> Cow.Xml.t
+
+module Sidebar : sig
+  type t = [ 
+   | `link of link
+   | `active_link of link
+   | `divider
+  ]
+
+  val t : title:string -> content:t list -> Cow.Xml.t
+end
