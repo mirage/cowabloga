@@ -52,14 +52,15 @@ let entry_to_html {read_entry;base_uri} e =
   let post = Blog_template.post ~title ~date ~author ~content in
   return post
 
-let entry_to_atom {base_uri; read_entry} e =
-  let permalink e = sprintf "%s/%s" base_uri e.permalink in
+let permalink cfg e = sprintf "%s/%s" cfg.base_uri e.permalink
+
+let entry_to_atom cfg e =
   let links = [
     Atom.mk_link ~rel:`alternate ~typ:"text/html"
-      (Uri.of_string (permalink e)) 
+      (Uri.of_string (permalink cfg e)) 
   ] in
   let meta = {
-    Atom.id      = permalink e;
+    Atom.id      = permalink cfg e;
     title        = e.subject;
     subtitle     = None;
     author       = Some e.author;
@@ -67,7 +68,7 @@ let entry_to_atom {base_uri; read_entry} e =
     rights       = None;
     links;
   } in 
-  read_entry e.body
+  cfg.read_entry e.body
   >|= fun content ->
   {
     Atom.entry = meta;
@@ -104,3 +105,8 @@ let atom_feed cfg es =
   let feed = { Atom.id; title; subtitle; author=None; rights; updated; links } in
   Lwt_list.map_s (entry_to_atom cfg) es
   >>= fun entries -> return { Atom.feed=feed; entries }
+
+let recent_posts cfg es =
+  let es = List.sort cmp_ent es in
+  List.map (fun e -> e.subject, Uri.of_string (permalink cfg e)) es
+

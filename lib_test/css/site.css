@@ -15,7 +15,7 @@ a {
   color: #333399;
 }
 
-a:hover {
+article a:hover {
   color: #333333;
   border-bottom: 1px dotted #999999;
   display: inline;
@@ -37,3 +37,8 @@ pre {
   padding: 10px;
   background: #cccccc;
 }
+
+.side-nav li a { 
+  color: #333399;
+}
+
