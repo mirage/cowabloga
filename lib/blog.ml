@@ -73,6 +73,7 @@ let entry_to_atom cfg e =
   {
     Atom.entry = meta;
     summary    = None;
+    base       = None;   
     content
   }
 
