@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 9e196ab00c4511633313acf57a97b71e)
+# DO NOT EDIT (digest: 53e5cc9dba0cca6625b3fed52dfc183d)
 # Ignore VCS directories, you can use the same kind of rule outside 
 # OASIS_START/STOP if you want to exclude directories that contains 
 # useless stuff for the build process
@@ -22,6 +22,13 @@
 <lib/*.ml{,i}>: pkg_cow.syntax
 <lib/*.ml{,i}>: pkg_cow
 <lib/*.ml{,i}>: pkg_lwt
+# Executable atom_fetch
+<lib_test/atom_fetch.{native,byte}>: use_cowabloga
+<lib_test/atom_fetch.{native,byte}>: pkg_cohttp.lwt
+<lib_test/atom_fetch.{native,byte}>: pkg_cow.syntax
+<lib_test/atom_fetch.{native,byte}>: pkg_cow
+<lib_test/atom_fetch.{native,byte}>: pkg_lwt
+<lib_test/atom_fetch.{native,byte}>: custom
 # Executable cowabloga_test
 <lib_test/serve.{native,byte}>: use_cowabloga
 <lib_test/serve.{native,byte}>: pkg_cohttp.lwt
@@ -37,3 +44,4 @@
 # OASIS_STOP
 true: annot
 true: bin_annot
+true: syntax_camlp4o

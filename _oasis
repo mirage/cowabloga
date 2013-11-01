@@ -14,6 +14,14 @@ Library cowabloga
   Modules: Blog_template, Foundation, Date, Blog
   BuildDepends:	cow, cow.syntax, lwt
 
+Executable atom_fetch
+  Path:               lib_test
+  MainIs:             atom_fetch.ml
+  Custom:             true
+  CompiledObject:     best
+  Install:            false
+  BuildDepends:       cohttp.lwt, cowabloga, cow.syntax
+
 Executable cowabloga_test
   Path: lib_test
   MainIs: serve.ml
