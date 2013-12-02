@@ -29,3 +29,11 @@ Executable cowabloga_test
   CompiledObject:     best
   Install:            false
   BuildDepends:       cohttp.lwt, cowabloga, cow.syntax
+
+Executable my_website
+  Path: site
+  MainIs: serve.ml
+  Custom: true
+  CompiledObject: best
+  Install: false
+  BuildDepends: cohttp.lwt, cowabloga, cow.syntax
