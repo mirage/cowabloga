@@ -22,15 +22,15 @@ let link ?(cl="") (txt,uri) = <:html<<a href=$uri:uri$ class=$str:cl$>$str:txt$<
 let mk_ul_links ~cl ~links =
   let items = List.map (fun l -> <:html<<li>$l$</li>&>>) links in
   <:html<<ul class=$str:cl$>$list:items$</ul>&>>
-  
+
 let button_group (links:links) =
   let links = List.map (link ~cl:"button") links in
   mk_ul_links ~cl:"button-group" ~links
- 
+
 let side_nav (links:links) =
   let links = List.map link links in
   mk_ul_links ~cl:"side-nav" ~links
- 
+
 let bottom_nav (links:links) =
   let links = List.map link links in
   mk_ul_links ~cl:"inline-list right" ~links
@@ -46,7 +46,7 @@ let post ~title ~author ~date ~content =
  >>
 
 module Sidebar = struct
-  type t = [ 
+  type t = [
    | `link of link
    | `active_link of link
    | `divider
@@ -68,7 +68,7 @@ module Sidebar = struct
     </ul>
      >>
 end
-          
+
 let t ~title ~subtitle ~nav_links ~sidebar ~posts ~copyright() =
   let subtitle =
     match subtitle with
@@ -91,17 +91,17 @@ let t ~title ~subtitle ~nav_links ~sidebar ~posts ~copyright() =
       $posts$
     </div>
     <!-- End Main Content -->
- 
+
     <!-- Sidebar -->
     <aside class="large-3 columns">
       $sidebar$
     </aside>
     <!-- End Sidebar -->
   </div>
- 
+
   <!-- End Main Content and Sidebar -->
   <!-- Footer -->
- 
+
   <footer class="row">
     <div class="large-12 columns">
       <hr />
