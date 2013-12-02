@@ -31,7 +31,7 @@ val bottom_nav : links -> Cow.Xml.t
 val post :
   title:string * Uri.t ->
   author:string * Uri.t ->
-  date:Cow.Html.t -> 
+  date:Cow.Html.t ->
   content:Cow.Html.t -> Cow.Html.t
 
 val t :
@@ -43,7 +43,7 @@ val t :
   copyright:'a Cow.Xml.frag list -> unit -> Cow.Xml.t
 
 module Sidebar : sig
-  type t = [ 
+  type t = [
    | `link of link
    | `active_link of link
    | `divider
