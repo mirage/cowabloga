@@ -12,7 +12,7 @@ Library cowabloga
   Findlibname: cowabloga
   Pack: true
   Modules: Blog_template, Foundation, Date, Blog
-  BuildDepends:	cow, cow.syntax, lwt
+  BuildDepends: cow, cow.syntax, lwt
 
 Executable atom_fetch
   Path:               lib_test
