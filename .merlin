@@ -6,3 +6,4 @@ PKG findlib
 PKG cohttp
 PKG lwt
 PKG cow
+PKG cstruct
