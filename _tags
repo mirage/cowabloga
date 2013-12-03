@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 53e5cc9dba0cca6625b3fed52dfc183d)
+# DO NOT EDIT (digest: 1c61cbdc625fff24dd0ddf160b4649f4)
 # Ignore VCS directories, you can use the same kind of rule outside 
 # OASIS_START/STOP if you want to exclude directories that contains 
 # useless stuff for the build process
@@ -41,6 +41,18 @@
 <lib_test/*.ml{,i}>: pkg_cow
 <lib_test/*.ml{,i}>: pkg_lwt
 <lib_test/serve.{native,byte}>: custom
+# Executable my_website
+<site/serve.{native,byte}>: use_cowabloga
+<site/serve.{native,byte}>: pkg_cohttp.lwt
+<site/serve.{native,byte}>: pkg_cow.syntax
+<site/serve.{native,byte}>: pkg_cow
+<site/serve.{native,byte}>: pkg_lwt
+<site/*.ml{,i}>: use_cowabloga
+<site/*.ml{,i}>: pkg_cohttp.lwt
+<site/*.ml{,i}>: pkg_cow.syntax
+<site/*.ml{,i}>: pkg_cow
+<site/*.ml{,i}>: pkg_lwt
+<site/serve.{native,byte}>: custom
 # OASIS_STOP
 true: annot
 true: bin_annot

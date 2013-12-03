@@ -1,5 +1,5 @@
 (* OASIS_START *)
-(* DO NOT EDIT (digest: 6a435eb3c229e52af56c729ccd29d234) *)
+(* DO NOT EDIT (digest: 918b7b736bdc95307d363476b674165c) *)
 module OASISGettext = struct
 (* # 21 "src/oasis/OASISGettext.ml" *)
 
@@ -480,7 +480,7 @@ let package_default =
      MyOCamlbuildBase.lib_ocaml = [("cowabloga", ["lib"])];
      lib_c = [];
      flags = [];
-     includes = [("lib_test", ["lib"])];
+     includes = [("site", ["lib"]); ("lib_test", ["lib"])];
      }
   ;;
 
