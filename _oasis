@@ -33,8 +33,9 @@ Executable cowabloga_test
 
 Executable my_website
   Path: site
-  MainIs: serve.ml
+  MainIs: siteserve.ml
   Custom: true
   CompiledObject: best
   Install: false
-  BuildDepends: cohttp.lwt, cowabloga, cow.syntax
+  BuildDepends: cohttp.lwt, cowabloga, cow.syntax,
+    cstruct, mirage, lwt.syntax
