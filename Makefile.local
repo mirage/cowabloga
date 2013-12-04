@@ -17,6 +17,11 @@
 
 .PHONY: setup-clean setup site run
 
+distclean: ## overrides default oasis rule
+	$(SETUP) -distclean $(DISTCLEANFLAGS)
+	$(RM) site/store.ml
+
+
 setup-clean: distclean
 	$(RM) Makefile.bak
 	oasis setup-clean
@@ -28,7 +33,8 @@ setup.ml: _oasis
 setup: setup.ml setup.data
 
 site/store.ml: site/store
-	crunch -o site/store.ml -name "store" site/store/
+	# crunch -o site/store.ml site/store/
+	mir-crunch -o site/store.ml -name "store" site/store/
 
 site: setup.ml site/store.ml build
 run: site
