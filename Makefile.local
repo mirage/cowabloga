@@ -15,11 +15,21 @@
 # PERFORMANCE OF THIS SOFTWARE.
 #
 
-.PHONY: configure
+.PHONY: setup-clean setup site run
 
 setup-clean: distclean
 	$(RM) Makefile.bak
 	oasis setup-clean
+	$(RM) setup.ml
 
-setup: setup.data
+setup.ml: _oasis
 	oasis setup
+
+setup: setup.ml setup.data
+
+site/store.ml: site/store
+	crunch -o site/store.ml -name "store" site/store/
+
+site: setup.ml site/store.ml build
+run: site
+	./siteserve.native
