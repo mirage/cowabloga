@@ -28,7 +28,7 @@ let callback conn_id ?body req =
   | "" | "/" | "/blog" ->
     Server.respond_string ~status:`OK ~body:Posts.page ()
 
-  | x ->
+  | _ ->
     let fname =
       Server.resolve_file ~docroot:"site/store" ~uri:(Request.uri req)
     in
