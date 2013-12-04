@@ -32,9 +32,14 @@ setup.ml: _oasis
 
 setup: setup.ml setup.data
 
-site/store.ml: site/store
+site/store.ml: site/store						\
+		site/store/css $(wildcard site/store/css/*.css)		\
+		site/store/js $(wildcard site/store/js/*.js)			\
+		site/store/img $(wildcard site/store/img/*)			\
+		site/store/posts $(wildcard site/store/posts/*.md)
+
 	# crunch -o site/store.ml site/store/
-	mir-crunch -o site/store.ml -name "store" site/store/
+	mir-crunch -o site/store.ml -name "store" site/store
 
 site: setup.ml site/store.ml build
 run: site
