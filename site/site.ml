@@ -20,16 +20,38 @@ open Cowabloga
 open Lwt
 open Cohttp_lwt_unix
 
+let log = Printf.printf
+
+let startswith str pfx = String.(sub str 0 (length pfx)) = pfx
+
 let callback conn_id ?body req =
+  let open Server in
   match Uri.path (Request.uri req) with
-  | "/hello" ->
-    Server.respond_string ~status:`OK ~body:"hello world" ()
-
-  | "" | "/" | "/blog" ->
-    Server.respond_string ~status:`OK ~body:Posts.page ()
-
-  | _ ->
-    let fname =
-      Server.resolve_file ~docroot:"site/store" ~uri:(Request.uri req)
-    in
-    Server.respond_file ~fname ()
+  | "" | "/" | "/blog" | "/blog/" -> respond_string ~status:`OK ~body:Posts.page ()
+  | path ->
+    log "# path:'%s'\n%!" path;
+    if startswith path "/blog/" then
+      let open Blog in
+      (* search through Posts.entries to find matching permalink ; return
+         rendered entry *)
+      let e = List.find
+          (fun e ->
+            let pl = String.length "/blog/" in
+            e.permalink = String.(sub path pl ((length path)-pl))
+          )
+          Posts.Entries.t
+      in
+      let title = (e.subject, Uri.of_string e.permalink) in
+      let author =
+        let open Cow.Atom in
+        (e.author.name,
+         Uri.of_string (match e.author.uri with Some x -> x | None -> ""))
+      in
+      let date = Date.html_of_date e.updated in
+      lwt content = Posts.read_entry e.body in
+      let post = Blog_template.post ~title ~author ~date ~content in
+      let body = Cow.Html.to_string post in
+      respond_string ~status:`OK ~body ()
+    else
+      let fname = resolve_file ~docroot:"site/store" ~uri:(Request.uri req) in
+      respond_file ~fname ()

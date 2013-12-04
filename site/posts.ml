@@ -34,8 +34,11 @@ module Entries = struct
     [ { Blog.updated = Date.date (2013, 10, 14, 10, 46);
         author = Authors.mort;
         subject = "A 21st Century IDE";
-        body = "...";
-        permalink = "/2013/10/13/21st-century-ide/";
+        body = "posts/21st-century-ide.md";
+
+        (* XXX permalink will have /blog/ prepended due to embedded string
+           fragments throughout lib/blog.ml; fix later though *)
+        permalink = "2013/10/13/21st-century-ide/";
       };
     ]
 end
@@ -59,9 +62,11 @@ let page =
     let sidebar =
       Blog_template.Sidebar.t ~title:"recent posts" ~content:recent_posts
     in
-    let { Blog.title; subtitle } = config in
-    Config.(Blog_template.t ~title ~subtitle ~nav_links:nav_links ~sidebar ~posts ~copyright ())
+    Config.(
+      Blog_template.t ~title ~subtitle ~nav_links ~sidebar ~posts ~copyright ()
+    )
   in
 
-  let body = Foundation.body ~title:"myths & legends" ~content:content in
+  let title = config.title ^ " | myths & legends" in
+  let body = Foundation.body ~title ~content in
   Foundation.page ~body
