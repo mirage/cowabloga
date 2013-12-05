@@ -53,20 +53,50 @@ let read_entry ent =
 
 let config = Config.({ Blog.title; subtitle; base_uri; rights; read_entry })
 
-let posts =
-  Lwt_unix.run (Blog.entries_to_html config Entries.t)
-
 let page =
+  let posts = Lwt_unix.run (Blog.entries_to_html config Entries.t) in
   let content =
-    let recent_posts = Blog.recent_posts config Entries.t in
     let sidebar =
+      let recent_posts = Blog.recent_posts config Entries.t in
       Blog_template.Sidebar.t ~title:"recent posts" ~content:recent_posts
     in
     Config.(
       Blog_template.t ~title ~subtitle ~nav_links ~sidebar ~posts ~copyright ()
     )
   in
-
-  let title = config.title ^ " | myths & legends" in
+  let title = config.Blog.title ^ " | myths & legends" in
   let body = Foundation.body ~title ~content in
+  Foundation.page ~body
+
+let post path =
+  let open Blog in
+  let e = List.find
+      (fun e ->
+         let pl = String.length "/blog/" in
+         e.permalink = String.(sub path pl ((length path)-pl))
+      )
+      Entries.t
+  in
+  let content =
+    let content = Lwt_unix.run (read_entry e.body) in
+    let date = Date.html_of_date e.updated in
+    let author =
+      let open Cow.Atom in
+      (e.author.name,
+       Uri.of_string (match e.author.uri with Some x -> x | None -> ""))
+    in
+    let title = (e.subject, Uri.of_string ("/blog/" ^ e.permalink)) in
+    (Blog_template.post ~title ~author ~date ~content)
+  in
+  let sidebar = <:html< >> in
+
+  let content = Config.(
+      Blog_template.t
+        ~title ~subtitle ~nav_links ~sidebar ~posts:content ~copyright ()
+    )
+  in
+  let body =
+    let title = config.title ^ " | " ^ e.subject in
+    Foundation.body ~title ~content
+  in
   Foundation.page ~body
