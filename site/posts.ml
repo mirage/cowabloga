@@ -49,7 +49,7 @@ let read_entry ent =
   | Some b ->
     let string_of_stream s = Lwt_stream.to_list s >|= Cstruct.copyv in
     lwt str = string_of_stream b in
-    return Cow.(Markdown.to_html (Markdown.of_string str))
+    return (Markdown_omd.of_string str)
 
 let config = Config.({ Blog.title; subtitle; base_uri; rights; read_entry })
 
