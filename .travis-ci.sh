@@ -1,7 +1,7 @@
 ## declare required packages
 
 ## ssl needed below to get the Lwt_unix version of cohttp
-OPAM_PACKAGES="mirage mirage-net cow mirage-fs ssl cohttp"
+OPAM_PACKAGES="mirage mirage-net cow ocaml-crunch ssl cohttp omd"
 
 ## different PPAs required to cover the test matrix
 
@@ -51,6 +51,6 @@ opam install $mirage_pkg ${OPAM_PACKAGES}
 
 cd $TRAVIS_BUILD_DIR
 make configure
-make build
-make doc
 make test
+make site
+make doc
