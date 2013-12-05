@@ -52,12 +52,12 @@ let entry_to_html {read_entry;base_uri} e =
   let post = Blog_template.post ~title ~date ~author ~content in
   return post
 
-let permalink cfg e = sprintf "%s/%s" cfg.base_uri e.permalink
+let permalink cfg e = sprintf "%s/blog/%s" cfg.base_uri e.permalink
 
 let entry_to_atom cfg e =
   let links = [
     Atom.mk_link ~rel:`alternate ~typ:"text/html"
-      (Uri.of_string (permalink cfg e)) 
+      (Uri.of_string (permalink cfg e))
   ] in
   let meta = {
     Atom.id      = permalink cfg e;
@@ -67,13 +67,13 @@ let entry_to_atom cfg e =
     updated      = Date.atom_date e.updated;
     rights       = None;
     links;
-  } in 
+  } in
   cfg.read_entry e.body
   >|= fun content ->
   {
     Atom.entry = meta;
     summary    = None;
-    base       = None;   
+    base       = None;
     content
   }
 
@@ -92,7 +92,7 @@ let entries_to_html ?(sep=default_entry_separator) cfg entries =
        >|= fun tl -> <:html<$hd$$sep$$tl$>>
   in
   concat (List.sort cmp_ent entries)
-    
+
 let atom_feed cfg es =
   let { base_uri; rights; title; subtitle } = cfg in
   let mk_uri uri = Uri.of_string (sprintf "%s/%s" base_uri uri) in
@@ -116,4 +116,3 @@ let recent_posts ?(active="") cfg es =
     else
       `link link
   ) es
- 

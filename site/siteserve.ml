@@ -15,39 +15,17 @@
  *
  *)
 
-type link = string * Uri.t
-type links = link list
+open Printf
+open Lwt
 
-val link : ?cl:string -> link -> Cow.Xml.t
+open Cohttp
+open Cohttp_lwt_unix
 
-val mk_ul_links : cl:string -> links:('a Cow.Xml.frag as 'a) list list -> Cow.Xml.t
+let make_server () =
+  let conn_closed conn_id () =
+    Printf.eprintf "conn %s closed\n%!" (Server.string_of_conn_id conn_id)
+  in
+  let config = { Server.callback=Site.callback; conn_closed } in
+  Server.create ~address:"0.0.0.0" ~port:8081 config
 
-val button_group : links -> Cow.Xml.t
-
-val side_nav : links -> Cow.Xml.t
-
-val bottom_nav : links -> Cow.Xml.t
-
-val post :
-  title:string * Uri.t ->
-  author:string * Uri.t ->
-  date:Cow.Html.t ->
-  content:Cow.Html.t -> Cow.Html.t
-
-val t :
-  title:string ->
-  subtitle:string option ->
-  nav_links:links ->
-  sidebar: Cow.Xml.t ->
-  posts:('a Cow.Xml.frag as 'a) Cow.Xml.frag list ->
-  copyright:'a Cow.Xml.frag list -> unit -> Cow.Xml.t
-
-module Sidebar : sig
-  type t = [
-   | `link of link
-   | `active_link of link
-   | `divider
-  ]
-
-  val t : title:string -> content:t list -> Cow.Xml.t
-end
+let _ = Lwt_unix.run (make_server ())

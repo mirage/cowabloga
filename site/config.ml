@@ -1,5 +1,5 @@
 (*
- * Copyright (c) 2013 Anil Madhavapeddy <anil@recoil.org>
+ * Copyright (c) 2013 Richard Mortier <mort@cantab.net>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,22 +15,16 @@
  *
  *)
 
-let body ~title ~content =
-  <:html<
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width"/>
-  <title>$str:title$</title>
-  <link rel="stylesheet" href="/css/foundation.min.css"> </link>
-  <link rel="stylesheet" href="/css/site.css"> </link>
-  <script src="/js/vendor/custom.modernizr.js"> </script>
-</head>
-<body>$content$</body>
-  >>
+let copyright = <:html<2009-2013 Richard Mortier>>
+let title = "mort's mythopoeia"
+let subtitle = Some "because everyone needs a presence, right?"
+let base_uri = "http://localhost:8081"
+let rights = Some "All rights reserved"
 
-let page ~body =
-  Printf.sprintf "<!DOCTYPE html>
-<!--[if IE 8]><html class=\"no-js lt-ie9\" lang=\"en\" ><![endif]-->
-<!--[if gt IE 8]><!--><html class=\"no-js\" lang=\"en\" ><!--<![endif]-->
-%s
-</html>" (Cow.Html.to_string body)
+let nav_links =
+  let uri = Uri.of_string in
+  [
+    "home",    uri "/";
+    "blog",    uri "/blog";
+    "contact", uri "/contact"
+  ]

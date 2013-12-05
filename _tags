@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 53e5cc9dba0cca6625b3fed52dfc183d)
+# DO NOT EDIT (digest: dce9b401363f19e83c2ef2346a3727d6)
 # Ignore VCS directories, you can use the same kind of rule outside 
 # OASIS_START/STOP if you want to exclude directories that contains 
 # useless stuff for the build process
@@ -22,12 +22,14 @@
 <lib/*.ml{,i}>: pkg_cow.syntax
 <lib/*.ml{,i}>: pkg_cow
 <lib/*.ml{,i}>: pkg_lwt
+<lib/*.ml{,i}>: pkg_omd
 # Executable atom_fetch
 <lib_test/atom_fetch.{native,byte}>: use_cowabloga
 <lib_test/atom_fetch.{native,byte}>: pkg_cohttp.lwt
 <lib_test/atom_fetch.{native,byte}>: pkg_cow.syntax
 <lib_test/atom_fetch.{native,byte}>: pkg_cow
 <lib_test/atom_fetch.{native,byte}>: pkg_lwt
+<lib_test/atom_fetch.{native,byte}>: pkg_omd
 <lib_test/atom_fetch.{native,byte}>: custom
 # Executable cowabloga_test
 <lib_test/serve.{native,byte}>: use_cowabloga
@@ -35,12 +37,34 @@
 <lib_test/serve.{native,byte}>: pkg_cow.syntax
 <lib_test/serve.{native,byte}>: pkg_cow
 <lib_test/serve.{native,byte}>: pkg_lwt
+<lib_test/serve.{native,byte}>: pkg_omd
 <lib_test/*.ml{,i}>: use_cowabloga
 <lib_test/*.ml{,i}>: pkg_cohttp.lwt
 <lib_test/*.ml{,i}>: pkg_cow.syntax
 <lib_test/*.ml{,i}>: pkg_cow
 <lib_test/*.ml{,i}>: pkg_lwt
+<lib_test/*.ml{,i}>: pkg_omd
 <lib_test/serve.{native,byte}>: custom
+# Executable my_website
+<site/siteserve.{native,byte}>: use_cowabloga
+<site/siteserve.{native,byte}>: pkg_cohttp.lwt
+<site/siteserve.{native,byte}>: pkg_cow.syntax
+<site/siteserve.{native,byte}>: pkg_cstruct
+<site/siteserve.{native,byte}>: pkg_mirage
+<site/siteserve.{native,byte}>: pkg_lwt.syntax
+<site/siteserve.{native,byte}>: pkg_cow
+<site/siteserve.{native,byte}>: pkg_lwt
+<site/siteserve.{native,byte}>: pkg_omd
+<site/*.ml{,i}>: use_cowabloga
+<site/*.ml{,i}>: pkg_cohttp.lwt
+<site/*.ml{,i}>: pkg_cow.syntax
+<site/*.ml{,i}>: pkg_cstruct
+<site/*.ml{,i}>: pkg_mirage
+<site/*.ml{,i}>: pkg_lwt.syntax
+<site/*.ml{,i}>: pkg_cow
+<site/*.ml{,i}>: pkg_lwt
+<site/*.ml{,i}>: pkg_omd
+<site/siteserve.{native,byte}>: custom
 # OASIS_STOP
 true: annot
 true: bin_annot
