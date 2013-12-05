@@ -1,8 +1,8 @@
 # OASIS_START
-# DO NOT EDIT (digest: ed701ded8105f1132e2a18ea83ccbf80)
+# DO NOT EDIT (digest: 563bbb5ae78127e74f035212149ce9f4)
 version = "1.0"
 description = "Blog templates using Cow and Omd"
-requires = "cow cow.syntax lwt"
+requires = "cow cow.syntax lwt omd"
 archive(byte) = "cowabloga.cma"
 archive(byte, plugin) = "cowabloga.cma"
 archive(native) = "cowabloga.cmxa"
