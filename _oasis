@@ -13,7 +13,7 @@ Library cowabloga
   Pack: true
   Install: true
   Modules: Blog_template, Foundation, Date, Blog
-  BuildDepends: cow, cow.syntax, lwt
+  BuildDepends: cow, cow.syntax, lwt, omd
 
 Executable atom_fetch
   Path:               lib_test
@@ -38,4 +38,4 @@ Executable my_website
   CompiledObject: best
   Install: false
   BuildDepends: cohttp.lwt, cowabloga, cow.syntax,
-    cstruct, mirage, lwt.syntax, omd
+    cstruct, mirage, lwt.syntax
