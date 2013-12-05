@@ -52,7 +52,7 @@ let entry_to_html {read_entry;base_uri} e =
   let post = Blog_template.post ~title ~date ~author ~content in
   return post
 
-let permalink cfg e = sprintf "%s/%s" cfg.base_uri e.permalink
+let permalink cfg e = sprintf "%s/blog/%s" cfg.base_uri e.permalink
 
 let entry_to_atom cfg e =
   let links = [
