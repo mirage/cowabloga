@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: c8dde7b8333cddcaa4ef38e156688ccd)
+# DO NOT EDIT (digest: 357fb26b0d5bfa0c2460777d921cb963)
 # Ignore VCS directories, you can use the same kind of rule outside 
 # OASIS_START/STOP if you want to exclude directories that contains 
 # useless stuff for the build process
@@ -48,6 +48,7 @@
 <site/siteserve.{native,byte}>: pkg_cstruct
 <site/siteserve.{native,byte}>: pkg_mirage
 <site/siteserve.{native,byte}>: pkg_lwt.syntax
+<site/siteserve.{native,byte}>: pkg_omd
 <site/siteserve.{native,byte}>: pkg_cow
 <site/siteserve.{native,byte}>: pkg_lwt
 <site/*.ml{,i}>: use_cowabloga
@@ -56,6 +57,7 @@
 <site/*.ml{,i}>: pkg_cstruct
 <site/*.ml{,i}>: pkg_mirage
 <site/*.ml{,i}>: pkg_lwt.syntax
+<site/*.ml{,i}>: pkg_omd
 <site/*.ml{,i}>: pkg_cow
 <site/*.ml{,i}>: pkg_lwt
 <site/siteserve.{native,byte}>: custom
