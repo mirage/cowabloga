@@ -8,7 +8,7 @@ let read_entry ent =
     let md = Cow.Markdown.of_string b in
     return (Cow.Markdown.to_html md)
 
-let config = { 
+let config = {
   Blog.base_uri="http://localhost:8081";
   title = "OpenMirage";
   subtitle = Some "the development blog";

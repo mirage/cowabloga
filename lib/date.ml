@@ -32,17 +32,17 @@ let short_string_of_month m =
 
 let long_string_of_month m =
   match m with
-  | 1  -> "January" 
-  | 2  -> "February" 
+  | 1  -> "January"
+  | 2  -> "February"
   | 3  -> "March"
-  | 4  -> "April" 
+  | 4  -> "April"
   | 5  -> "May"
   | 6  -> "June"
-  | 7  -> "July" 
-  | 8  -> "August" 
+  | 7  -> "July"
+  | 8  -> "August"
   | 9  -> "September"
-  | 10 -> "October" 
-  | 11 -> "November" 
+  | 10 -> "October"
+  | 11 -> "November"
   | 12 -> "December"
   | _  -> "???"
 
@@ -65,4 +65,3 @@ let date (year, month, day, hour, min) =
 
 let atom_date d =
   ( d.year, d.month, d.day, d.hour, d.min)
-

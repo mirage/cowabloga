@@ -1,0 +1,41 @@
+# -*- mode: Makefile -*-
+#
+# Copyright (c) 2013 Richard Mortier <mort@cantab.net>
+#
+# Permission to use, copy, modify, and distribute this software for any purpose
+# with or without fee is hereby granted, provided that the above copyright
+# notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+# REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+# AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+# INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+# LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+# OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+#
+
+.PHONY: setup-clean setup site run
+
+distclean: ## overrides default oasis rule
+	$(SETUP) -distclean $(DISTCLEANFLAGS)
+	$(RM) site/store.ml
+
+
+setup-clean: distclean
+	$(RM) Makefile.bak
+	oasis setup-clean
+	$(RM) setup.ml
+
+setup.ml: _oasis
+	oasis setup
+
+setup: setup.ml setup.data
+
+site/store.ml: site/store
+	# crunch -o site/store.ml site/store/
+	mir-crunch -o site/store.ml -name "store" site/store/
+
+site: setup.ml site/store.ml build
+run: site
+	./siteserve.native
