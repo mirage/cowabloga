@@ -53,4 +53,3 @@ let entries = [
     permalink  = "xen-block-devices-with-mirage";
   };
 ]
-

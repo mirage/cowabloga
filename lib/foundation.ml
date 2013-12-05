@@ -21,9 +21,9 @@ let body ~title ~content =
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width"/>
   <title>$str:title$</title>
-  <link rel="stylesheet" href="css/foundation.css"> </link>
-  <link rel="stylesheet" href="css/site.css"> </link>
-  <script src="js/vendor/custom.modernizr.js"> </script>
+  <link rel="stylesheet" href="/css/foundation.min.css"> </link>
+  <link rel="stylesheet" href="/css/site.css"> </link>
+  <script src="/js/vendor/custom.modernizr.js"> </script>
 </head>
 <body>$content$</body>
   >>
