@@ -33,5 +33,6 @@ let t =
   Blog_template.t ~title ~subtitle ~nav_links ~sidebar ~posts ~copyright ()
 
 let blog =
-  let body = Foundation.body ~title:"Mirage Musings" ~content:t in
+  let headers = <:html< >> in
+  let body = Foundation.body ~title:"Mirage Musings" ~headers ~content:t in
   Foundation.page ~body
