@@ -15,7 +15,7 @@
  *
  *)
 
-let body ~title ~content =
+let body ~title ~headers ~content =
   <:html<
 <head>
   <meta charset="utf-8" />
@@ -24,6 +24,8 @@ let body ~title ~content =
   <link rel="stylesheet" href="/css/foundation.min.css"> </link>
   <link rel="stylesheet" href="/css/site.css"> </link>
   <script src="/js/vendor/custom.modernizr.js"> </script>
+
+  $headers$
 </head>
 <body>$content$</body>
   >>

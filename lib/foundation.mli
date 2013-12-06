@@ -15,6 +15,6 @@
  *
  *)
 
-val body : title:string -> content:Cow.Html.t -> Cow.Html.t
+val body: title:string -> headers:Cow.Html.t -> content:Cow.Html.t -> Cow.Html.t
 
-val page : body:Cow.Html.t -> string
+val page: body:Cow.Html.t -> string
