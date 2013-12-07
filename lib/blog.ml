@@ -28,6 +28,7 @@ type feed = {
   title: string;
   subtitle: string option;
   base_uri: string;
+  id: string;
   rights: string option;
   read_entry: string -> Cow.Html.t Lwt.t;
 }
@@ -115,15 +116,15 @@ let to_html ?(sep=default_separator) ~feed ~entries =
 (** [to_atom feed entries] generates a time-ordered ATOM RSS [feed] for a
     sequence of [entries]. *)
 let to_atom ~feed ~entries =
-  let { title; subtitle; base_uri; rights } = feed in
+  let { title; subtitle; base_uri; id; rights } = feed in
   let entries = List.sort Entry.compare entries in
   let updated = Date.atom_date (List.hd entries).Entry.updated in
   let links = [
-    Atom.mk_link (Uri.of_string (base_uri ^ "/atom.xml"));
+    Atom.mk_link (Uri.of_string (base_uri ^ id ^ "/atom.xml"));
     Atom.mk_link ~rel:`alternate ~typ:"text/html" (Uri.of_string base_uri)
   ] in
   let atom_feed =
-    { Atom.id="/blog/"; title; subtitle; author=None; rights; updated; links }
+    { Atom.id; title; subtitle; author=None; rights; updated; links }
   in
   lwt entries = Lwt_list.map_s (Entry.to_atom feed) entries in
   return { Atom.feed=atom_feed; entries }
