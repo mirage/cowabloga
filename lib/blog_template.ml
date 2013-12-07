@@ -17,7 +17,8 @@
 
 type link = string * Uri.t
 type links = link list
-let link ?(cl="") (txt,uri) = <:html<<a href=$uri:uri$ class=$str:cl$>$str:txt$</a>&>>
+let link ?(cl="") (txt,uri) =
+  <:html<<a href=$uri:uri$ class=$str:cl$>$str:txt$</a>&>>
 
 let mk_ul_links ~cl ~links =
   let items = List.map (fun l -> <:html<<li>$l$</li>&>>) links in
@@ -38,12 +39,12 @@ let bottom_nav (links:links) =
 let post ~title ~author ~date ~content =
   let (title_text, title_uri) = title in
   <:html<
-  <article>
-    <h3><a href=$uri:title_uri$>$str:title_text$</a></h3>
-    <h6>Written by $link author$ on $date$.</h6>
-    $content$
-  </article>
- >>
+    <article>
+      <h3><a href=$uri:title_uri$>$str:title_text$</a></h3>
+      <h6>Written by $link author$ on $date$.</h6>
+      $content$
+    </article>
+  >>
 
 module Sidebar = struct
   type t = [
