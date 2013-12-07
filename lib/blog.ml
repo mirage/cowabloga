@@ -86,10 +86,10 @@ let entries_to_html ?(sep=default_entry_separator) cfg entries =
   let rec concat = function
     | []     -> return <:html<&>>
     | hd::tl ->
-       entry_to_html cfg hd
-       >>= fun hd ->
-       concat tl
-       >|= fun tl -> <:html<$hd$$sep$$tl$>>
+      entry_to_html cfg hd
+      >>= fun hd ->
+      concat tl
+      >|= fun tl -> <:html<$hd$$sep$$tl$>>
   in
   concat (List.sort cmp_ent entries)
 
@@ -110,9 +110,9 @@ let atom_feed cfg es =
 let recent_posts ?(active="") cfg es =
   let es = List.sort cmp_ent es in
   List.map (fun e ->
-    let link = e.subject, Uri.of_string (permalink cfg e) in
-    if e.subject = active then
-      `active_link link
-    else
-      `link link
-  ) es
+      let link = e.subject, Uri.of_string (permalink cfg e) in
+      if e.subject = active then
+        `active_link link
+      else
+        `link link
+    ) es
