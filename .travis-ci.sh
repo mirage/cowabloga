@@ -1,7 +1,7 @@
 ## declare required packages
 
 ## ssl needed below to get the Lwt_unix version of cohttp
-OPAM_PACKAGES="mirage mirage-net cow mirage-fs ssl cohttp"
+OPAM_PACKAGES="mirage mirage-net cow mirage-fs ssl cohttp omd"
 
 ## different PPAs required to cover the test matrix
 
