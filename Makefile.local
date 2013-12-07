@@ -26,11 +26,3 @@ setup.ml: _oasis
 	oasis setup
 
 setup: setup.ml setup.data
-
-
-uninstall: setup.data
-	$(SETUP) -uninstall $(UNINSTALLFLAGS)
-	ocamlfind remove cowabloga
-
-reinstall: setup.data
-	$(SETUP) -reinstall $(REINSTALLFLAGS)
