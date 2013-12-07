@@ -15,7 +15,7 @@
 # PERFORMANCE OF THIS SOFTWARE.
 #
 
-.PHONY: setup-clean setup site run
+.PHONY: setup-clean setup
 
 setup-clean: distclean
 	$(RM) Makefile.bak
