@@ -17,22 +17,25 @@
 
 let body ~title ~headers ~content =
   <:html<
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width"/>
-  <title>$str:title$</title>
-  <link rel="stylesheet" href="/css/foundation.min.css"> </link>
-  <link rel="stylesheet" href="/css/site.css"> </link>
-  <script src="/js/vendor/custom.modernizr.js"> </script>
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width"/>
+      <title>$str:title$</title>
+      <link rel="stylesheet" href="/css/foundation.min.css"> </link>
+      <link rel="stylesheet" href="/css/site.css"> </link>
+      <script src="/js/vendor/custom.modernizr.js"> </script>
 
-  $headers$
-</head>
-<body>$content$</body>
+      $headers$
+    </head>
+    <body>
+      $content$
+    </body>
   >>
 
 let page ~body =
-  Printf.sprintf "<!DOCTYPE html>
-<!--[if IE 8]><html class=\"no-js lt-ie9\" lang=\"en\" ><![endif]-->
-<!--[if gt IE 8]><!--><html class=\"no-js\" lang=\"en\" ><!--<![endif]-->
-%s
+  Printf.sprintf "\
+<!DOCTYPE html>
+  <!--[if IE 8]><html class=\"no-js lt-ie9\" lang=\"en\" ><![endif]-->
+  <!--[if gt IE 8]><!--><html class=\"no-js\" lang=\"en\" ><!--<![endif]-->
+  %s
 </html>" (Cow.Html.to_string body)
