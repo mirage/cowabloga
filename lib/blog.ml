@@ -51,7 +51,7 @@ module Entry = struct
 
   (** Compare two entries. *)
   let compare a b =
-    compare (Date.atom_date a.updated) (Date.atom_date b.updated)
+    compare (Date.atom_date b.updated) (Date.atom_date a.updated)
 
   (** [to_html feed entry] converts a blog entry in the given feed into an
       Html.t fragment. *)
@@ -112,6 +112,7 @@ let to_html ?(sep=default_separator) ~feed ~entries =
       >|= fun tl -> <:html< $hd$$sep$$tl$ >>
   in
   concat (List.sort Entry.compare entries)
+
 
 (** [to_atom feed entries] generates a time-ordered ATOM RSS [feed] for a
     sequence of [entries]. *)
