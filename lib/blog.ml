@@ -51,7 +51,7 @@ module Entry = struct
 
   (** Compare two entries. *)
   let compare a b =
-    compare (Date.atom_date b.updated) (Date.atom_date a.updated)
+    compare (Date.atom_date a.updated) (Date.atom_date b.updated)
 
   (** [to_html feed entry] converts a blog entry in the given feed into an
       Html.t fragment. *)
