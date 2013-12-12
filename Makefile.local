@@ -15,12 +15,7 @@
 # PERFORMANCE OF THIS SOFTWARE.
 #
 
-.PHONY: setup-clean setup site run
-
-distclean: ## overrides default oasis rule
-	$(SETUP) -distclean $(DISTCLEANFLAGS)
-	$(RM) site/store.ml
-
+.PHONY: setup-clean setup
 
 setup-clean: distclean
 	$(RM) Makefile.bak
@@ -31,11 +26,3 @@ setup.ml: _oasis
 	oasis setup
 
 setup: setup.ml setup.data
-
-site/store.ml: site/store
-	# crunch -o site/store.ml site/store/
-	mir-crunch -o site/store.ml -name "store" site/store/
-
-site: setup.ml site/store.ml build
-run: site
-	./siteserve.native

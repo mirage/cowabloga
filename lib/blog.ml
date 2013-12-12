@@ -1,5 +1,6 @@
 (*
  * Copyright (c) 2010-2013 Anil Madhavapeddy <anil@recoil.org>
+ * Copyright (c) 2013 Richard Mortier <mort@cantab.net>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,104 +16,136 @@
  *
  *)
 
+(** Blog management: entries, ATOM feeds, etc. *)
+
 open Printf
 open Lwt
 open Cow
+open Cstruct
 
+(** An RSS feed: metadata plus a way to retrieve entries. *)
 type feed = {
-  title      : string;
-  subtitle   : string option;
-  base_uri   : string;
-  rights     : string option;
-  read_entry : string -> Cow.Html.t Lwt.t;
+  title: string;
+  subtitle: string option;
+  base_uri: string;
+  id: string;
+  rights: string option;
+  read_entry: string -> Cow.Html.t Lwt.t;
 }
 
-type entry = {
-  updated    : Date.date;
-  author     : Atom.author;
-  subject    : string;
-  body       : string;
-  permalink  : string;
-}
+(** A feed is made up of Entries. *)
+module Entry = struct
 
-(* Convert a blog record into an Html.t fragment *)
-let entry_to_html {read_entry;base_uri} e =
-  read_entry e.body
-  >>= fun content ->
-  let permalink = Uri.of_string (sprintf "%s/blog/%s" base_uri e.permalink) in
-  let permalink_disqus = sprintf "/blog/%s#disqus_thread" e.permalink in
-  let author_uri =
-    match e.author.Atom.uri with
-    | None -> Uri.of_string "" (* TODO *)
-    | Some uri -> Uri.of_string uri
-  in
-  let author = e.author.Atom.name, author_uri in
-  let date = Date.html_of_date e.updated in
-  let title = e.subject, permalink in
-  let post = Blog_template.post ~title ~date ~author ~content in
-  return post
-
-let permalink cfg e = sprintf "%s/blog/%s" cfg.base_uri e.permalink
-
-let entry_to_atom cfg e =
-  let links = [
-    Atom.mk_link ~rel:`alternate ~typ:"text/html"
-      (Uri.of_string (permalink cfg e))
-  ] in
-  let meta = {
-    Atom.id      = permalink cfg e;
-    title        = e.subject;
-    subtitle     = None;
-    author       = Some e.author;
-    updated      = Date.atom_date e.updated;
-    rights       = None;
-    links;
-  } in
-  cfg.read_entry e.body
-  >|= fun content ->
-  {
-    Atom.entry = meta;
-    summary    = None;
-    base       = None;
-    content
+  (** An entry in a feed: metadata plus a filename [body]. *)
+  type t = {
+    updated: Date.date;
+    author: Atom.author;
+    subject: string;
+    permalink: string;
+    body: string;
   }
 
-let cmp_ent a b =
-  compare (Date.atom_date b.updated) (Date.atom_date a.updated)
+  (** [permalink feed entry] returns the permalink URI for [entry] in [feed]. *)
+  let permalink feed entry =
+    sprintf "%s%s" feed.base_uri entry.permalink
+
+  (** Compare two entries. *)
+  let compare a b =
+    compare (Date.atom_date b.updated) (Date.atom_date a.updated)
+
+  (** [to_html feed entry] converts a blog entry in the given feed into an
+      Html.t fragment. *)
+  let to_html ~feed ~entry =
+    lwt content = feed.read_entry entry.body in
+    let permalink_disqus = sprintf "/%s#disqus_thread" entry.permalink in
+    let author =
+      let author_uri = match entry.author.Atom.uri with
+        | None -> Uri.of_string "" (* TODO *)
+        | Some uri -> Uri.of_string uri
+      in
+      entry.author.Atom.name, author_uri
+    in
+    let date = Date.html_of_date entry.updated in
+    let title =
+      let permalink = Uri.of_string (permalink feed entry) in
+      entry.subject, permalink
+    in
+    return (Blog_template.post ~title ~date ~author ~content)
+
+  (** [to_atom feed entry] *)
+  let to_atom feed entry =
+    let links = [
+      Atom.mk_link ~rel:`alternate ~typ:"text/html"
+        (Uri.of_string (permalink feed entry))
+    ] in
+    let meta = {
+      Atom.id = permalink feed entry;
+      title = entry.subject;
+      subtitle = None;
+      author = Some entry.author;
+      updated = Date.atom_date entry.updated;
+      rights = None;
+      links;
+    } in
+    feed.read_entry entry.body
+    >|= fun content ->
+    {
+      Atom.entry = meta;
+      summary = None;
+      base = None;
+      content
+    }
+
+end
 
 (** Entries separated by <hr /> tags *)
-let default_entry_separator = <:html<<hr />&>>
-let entries_to_html ?(sep=default_entry_separator) cfg entries =
+let default_separator = <:html< <hr /> >>
+
+(** [to_html ?sep feed entries] renders a series of entries in a feed, separated
+    by [sep], defaulting to [default_separator]. *)
+let to_html ?(sep=default_separator) ~feed ~entries =
   let rec concat = function
-    | []     -> return <:html<&>>
+    | [] -> return <:html<&>>
     | hd::tl ->
-       entry_to_html cfg hd
-       >>= fun hd ->
-       concat tl
-       >|= fun tl -> <:html<$hd$$sep$$tl$>>
+      lwt hd = Entry.to_html feed hd in
+      concat tl
+      >|= fun tl -> <:html< $hd$$sep$$tl$ >>
   in
-  concat (List.sort cmp_ent entries)
+  concat (List.sort Entry.compare entries)
 
-let atom_feed cfg es =
-  let { base_uri; rights; title; subtitle } = cfg in
-  let mk_uri uri = Uri.of_string (sprintf "%s/%s" base_uri uri) in
-  let es = List.sort cmp_ent es in
-  let updated = Date.atom_date (List.hd es).updated in
-  let id = "/blog/" in
+
+(** [to_atom feed entries] generates a time-ordered ATOM RSS [feed] for a
+    sequence of [entries]. *)
+let to_atom ~feed ~entries =
+  let { title; subtitle; base_uri; id; rights } = feed in
+  let entries = List.sort Entry.compare entries in
+  let updated = Date.atom_date (List.hd entries).Entry.updated in
   let links = [
-    Atom.mk_link (mk_uri "blog/atom.xml");
-    Atom.mk_link ~rel:`alternate ~typ:"text/html" (mk_uri "blog/")
+    Atom.mk_link (Uri.of_string (base_uri ^ id ^ "/atom.xml"));
+    Atom.mk_link ~rel:`alternate ~typ:"text/html" (Uri.of_string base_uri)
   ] in
-  let feed = { Atom.id; title; subtitle; author=None; rights; updated; links } in
-  Lwt_list.map_s (entry_to_atom cfg) es
-  >>= fun entries -> return { Atom.feed=feed; entries }
+  let atom_feed =
+    { Atom.id; title; subtitle; author=None; rights; updated; links }
+  in
+  lwt entries = Lwt_list.map_s (Entry.to_atom feed) entries in
+  return { Atom.feed=atom_feed; entries }
 
-let recent_posts ?(active="") cfg es =
-  let es = List.sort cmp_ent es in
+(** [recent_posts feed entries] . *)
+let recent_posts ?(active="") feed entries =
+  let entries = List.sort Entry.compare entries in
   List.map (fun e ->
-    let link = e.subject, Uri.of_string (permalink cfg e) in
-    if e.subject = active then
-      `active_link link
-    else
-      `link link
-  ) es
+      let link = Entry.(e.subject, Uri.of_string (permalink feed e)) in
+      if e.Entry.subject = active then
+        `active_link link
+      else
+        `link link
+    ) entries
+
+(** [read_content store prefix f] reads content [prefix/f] from [store]. *)
+let read_content read prefix f =
+  match_lwt read (prefix ^ f) with
+  | None -> return <:html<$str:"???"$>>
+  | Some b ->
+    let string_of_stream s = Lwt_stream.to_list s >|= Cstruct.copyv in
+    lwt str = string_of_stream b in
+    return (Markdown_omd.of_string str)

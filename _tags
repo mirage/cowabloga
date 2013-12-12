@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 942528c8c9730b8a42a2a8c5e9cf9f42)
+# DO NOT EDIT (digest: 90349eed7f1e4ab8f21de7c1db68376a)
 # Ignore VCS directories, you can use the same kind of rule outside 
 # OASIS_START/STOP if you want to exclude directories that contains 
 # useless stuff for the build process
@@ -22,14 +22,18 @@
 <lib/*.ml{,i}>: pkg_cow.syntax
 <lib/*.ml{,i}>: pkg_cow
 <lib/*.ml{,i}>: pkg_lwt
+<lib/*.ml{,i}>: pkg_lwt.syntax
 <lib/*.ml{,i}>: pkg_omd
+<lib/*.ml{,i}>: pkg_cstruct
 # Executable atom_fetch
 <lib_test/atom_fetch.{native,byte}>: use_cowabloga
 <lib_test/atom_fetch.{native,byte}>: pkg_cohttp.lwt
 <lib_test/atom_fetch.{native,byte}>: pkg_cow.syntax
 <lib_test/atom_fetch.{native,byte}>: pkg_cow
 <lib_test/atom_fetch.{native,byte}>: pkg_lwt
+<lib_test/atom_fetch.{native,byte}>: pkg_lwt.syntax
 <lib_test/atom_fetch.{native,byte}>: pkg_omd
+<lib_test/atom_fetch.{native,byte}>: pkg_cstruct
 <lib_test/atom_fetch.{native,byte}>: custom
 # Executable cowabloga_test
 <lib_test/serve.{native,byte}>: use_cowabloga
@@ -37,13 +41,17 @@
 <lib_test/serve.{native,byte}>: pkg_cow.syntax
 <lib_test/serve.{native,byte}>: pkg_cow
 <lib_test/serve.{native,byte}>: pkg_lwt
+<lib_test/serve.{native,byte}>: pkg_lwt.syntax
 <lib_test/serve.{native,byte}>: pkg_omd
+<lib_test/serve.{native,byte}>: pkg_cstruct
 <lib_test/*.ml{,i}>: use_cowabloga
 <lib_test/*.ml{,i}>: pkg_cohttp.lwt
 <lib_test/*.ml{,i}>: pkg_cow.syntax
 <lib_test/*.ml{,i}>: pkg_cow
 <lib_test/*.ml{,i}>: pkg_lwt
+<lib_test/*.ml{,i}>: pkg_lwt.syntax
 <lib_test/*.ml{,i}>: pkg_omd
+<lib_test/*.ml{,i}>: pkg_cstruct
 <lib_test/serve.{native,byte}>: custom
 # OASIS_STOP
 true: annot
