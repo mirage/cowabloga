@@ -9,8 +9,8 @@ let read_entry ent =
 let config = {
   Blog.base_uri="http://localhost:8081";
   id = "";
-  title = "OpenMirage";
-  subtitle = Some "the development blog";
+  title = "Blog";
+  subtitle = Some "about recent developments in Mirage";
   rights = Mirage_people.rights;
   read_entry
 }
@@ -18,13 +18,7 @@ let config = {
 let posts =
   Lwt_unix.run (Blog.to_html config Mirage_blog.entries)
 
-let t =
-  let uri = Uri.of_string in
-  let nav_links = [
-    "home",    uri "/";
-    "blog",    uri "/blog";
-    "contact", uri "/contact" ]
-  in
+let t ~nav_links =
   let recent_posts = Blog.recent_posts config Mirage_blog.entries in
   let sidebar = Blog_template.Sidebar.t ~title:"Recent Posts" ~content:recent_posts in
   let copyright = <:html<Anil Madhavapeddy>> in
@@ -32,6 +26,16 @@ let t =
   Blog_template.t ~title ~subtitle ~nav_links ~sidebar ~posts ~copyright ()
 
 let blog =
+  let uri = Uri.of_string in
+  let nav_links = [
+    "home",    uri "/";
+    "blog",    uri "/blog";
+    "contact", uri "/contact" ]
+  in
   let headers = <:html< >> in
-  let body = Foundation.body ~title:"Mirage Musings" ~headers ~content:t in
+  let content =
+    Foundation.top_nav ~title:"Mirage OS" ~title_uri:(Uri.of_string "/") ~nav_links:(Blog_template.top_nav nav_links)
+    @ t ~nav_links
+  in
+  let body = Foundation.body ~title:"Mirage Musings" ~headers ~content in
   Foundation.page ~body

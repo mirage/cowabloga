@@ -37,7 +37,7 @@ let body ~title ~headers ~content =
     </body>
   >>
 
-let top_nav ~title ~title_uri =
+let top_nav ~title ~title_uri ~nav_links =
   <:html<
   <nav class="top-bar" data-topbar="">
   <ul class="title-area">
@@ -48,20 +48,8 @@ let top_nav ~title ~title_uri =
   </ul>
 
   <section class="top-bar-section">
-    <!-- Right Nav Section -->
     <ul class="right">
-      <li class="active"><a href="#">Right Nav Button Active</a></li>
-      <li class="has-dropdown">
-        <a href="#">Right Button with Dropdown</a>
-        <ul class="dropdown">
-          <li><a href="#">First link in dropdown</a></li>
-        </ul>
-      </li>
-    </ul>
-
-    <!-- Left Nav Section -->
-    <ul class="left">
-      <li><a href="#">Left Nav Button</a></li>
+      $nav_links$
     </ul>
   </section>
   </nav>

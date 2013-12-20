@@ -20,6 +20,8 @@ type links = link list
 
 val link : ?cl:string -> link -> Cow.Xml.t
 
+val top_nav : ?align:[ `Left | `Right ] -> links -> Cow.Xml.t
+
 val mk_ul_links : cl:string -> links:('a Cow.Xml.frag as 'a) list list -> Cow.Xml.t
 
 val button_group : links -> Cow.Xml.t

@@ -24,6 +24,11 @@ let mk_ul_links ~cl ~links =
   let items = List.map (fun l -> <:html<<li>$l$</li>&>>) links in
   <:html<<ul class=$str:cl$>$list:items$</ul>&>>
 
+let top_nav ?(align=`Right) (links:links) =
+  let links = List.map link links in
+  let cl = match align with `Right -> "right" | `Left -> "left" in
+  mk_ul_links ~cl ~links
+
 let button_group (links:links) =
   let links = List.map (link ~cl:"button") links in
   mk_ul_links ~cl:"button-group" ~links
@@ -79,7 +84,6 @@ let t ~title ~subtitle ~nav_links ~sidebar ~posts ~copyright() =
   <:html<
   <div class="row">
     <div class="large-12 columns">
-      <div class="nav-bar right">$button_group nav_links$</div>
       <h1>$str:title$ $subtitle$</h1>
       <hr />
     </div>
@@ -87,17 +91,19 @@ let t ~title ~subtitle ~nav_links ~sidebar ~posts ~copyright() =
   <!-- End Nav -->
   <!-- Main Page Content and Sidebar -->
   <div class="row">
+    <!-- Sidebar -->
+    <aside class="large-3 columns">
+      $sidebar$
+    </aside>
+    <!-- End Sidebar -->
+
+
     <!-- Main Blog Content -->
     <div class="large-9 columns" role="content">
       $posts$
     </div>
     <!-- End Main Content -->
 
-    <!-- Sidebar -->
-    <aside class="large-3 columns">
-      $sidebar$
-    </aside>
-    <!-- End Sidebar -->
   </div>
 
   <!-- End Main Content and Sidebar -->
