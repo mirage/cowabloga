@@ -85,7 +85,7 @@ let t ~title ~subtitle ~nav_links ~sidebar ~posts ~copyright() =
   <:html<
 
   <div class="row">
-    <div class="large-6 columns">
+    <div class="large-9 columns">
       <h1 class="subheader">$str:title$ $subtitle$</h1>
       <hr />
     </div>

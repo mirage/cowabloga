@@ -9,8 +9,8 @@ let read_entry ent =
 let config = {
   Blog.base_uri="http://localhost:8081";
   id = "";
-  title = "Blog";
-  subtitle = Some "about recent developments in Mirage";
+  title = "The Mirage Blog";
+  subtitle = Some "programming functional systems";
   rights = Mirage_people.rights;
   read_entry
 }
@@ -28,9 +28,12 @@ let t ~nav_links =
 let blog =
   let uri = Uri.of_string in
   let nav_links = [
-    "home",    uri "/";
-    "blog",    uri "/blog";
-    "contact", uri "/contact" ]
+    "Blog", uri "/";
+    "Docs", uri "/blog";
+    "API", uri "/api";
+    "Community", uri "/community";
+    "About", uri "/about";
+  ]
   in
   let headers = <:html< >> in
   let content =
