@@ -4,9 +4,7 @@ open Lwt
 let read_entry ent =
   match Mirage_entries.read ent with
   | None -> return <:html<$str:"???"$>>
-  | Some b ->
-    let md = Cow.Markdown.of_string b in
-    return (Cow.Markdown.to_html md)
+  | Some b -> return (Cow.Markdown.of_string b)
 
 let config = {
   Blog.base_uri="http://localhost:8081";
