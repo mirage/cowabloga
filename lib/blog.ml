@@ -148,4 +148,4 @@ let read_content read prefix f =
   | Some b ->
     let string_of_stream s = Lwt_stream.to_list s >|= Cstruct.copyv in
     lwt str = string_of_stream b in
-    return (Markdown_omd.of_string str)
+    return (Markdown.of_string str)
