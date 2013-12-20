@@ -17,15 +17,18 @@
 
 let body ~title ~headers ~content =
   (* Cannot be inlined below as the $ is interpreted as an antiquotation *)
-  let js_init = [`Data "$(document).foundation();"] in
+  let js_init = [`Data "$(document).foundation(); hljs.initHighlightingOnLoad();"] in
   <:html<
     <head>
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width"/>
       <title>$str:title$</title>
       <link rel="stylesheet" href="/css/foundation.min.css"> </link>
-      <link rel="stylesheet" href="/css/site.css"> </link>
+      <link rel="stylesheet" href="/css/magula.css"> </link>
+      <link rel="stylesheet" href="/css/site.css"> </link> 
+      <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?lang=ml"></script>
       <script src="/js/vendor/custom.modernizr.js"> </script>
+      <script src="/js/vendor/highlight.pack.js"> </script>
       <script src="/js/vendor/jquery.js"> </script>
       <script src="/js/foundation.js"> </script>
       <script src="/js/foundation/foundation.topbar.js"> </script>
@@ -39,7 +42,7 @@ let body ~title ~headers ~content =
 
 let top_nav ~title ~title_uri ~nav_links =
   <:html<
-  <div class="contain-to-grid sticky">
+  <div class="contain-to-grid fixed">
   <nav class="top-bar" data-topbar="">
   <ul class="title-area">
     <li class="name">
