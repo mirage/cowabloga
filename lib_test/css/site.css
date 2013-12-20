@@ -21,6 +21,12 @@ body {
   background-repeat: repeat-x;
 }
 
+code {
+  font-weight: normal;
+  margin-bottom: 1em;
+  font-size: 90%;
+}
+  
 .side-nav li a { 
   color: #333399;
 }
