@@ -39,6 +39,7 @@ let body ~title ~headers ~content =
 
 let top_nav ~title ~title_uri ~nav_links =
   <:html<
+  <div class="contain-to-grid sticky">
   <nav class="top-bar" data-topbar="">
   <ul class="title-area">
     <li class="name">
@@ -46,13 +47,11 @@ let top_nav ~title ~title_uri ~nav_links =
     </li>
     <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
   </ul>
-
   <section class="top-bar-section">
-    <ul class="right">
       $nav_links$
-    </ul>
   </section>
   </nav>
+  </div>
   >>
 
 let page ~body =
