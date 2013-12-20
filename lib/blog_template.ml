@@ -45,8 +45,9 @@ let post ~title ~author ~date ~content =
   let (title_text, title_uri) = title in
   <:html<
     <article>
-      <h3><a href=$uri:title_uri$>$str:title_text$</a></h3>
-      <h6>Written by $link author$ on $date$.</h6>
+      $date$
+      <h4><a href=$uri:title_uri$>$str:title_text$</a></h4>
+      <p><i>By $link author$</i></p>
       $content$
     </article>
   >>
@@ -82,27 +83,41 @@ let t ~title ~subtitle ~nav_links ~sidebar ~posts ~copyright() =
     | Some s -> <:html<<small>$str:s$</small>&>>
   in
   <:html<
+
   <div class="row">
-    <div class="large-12 columns">
-      <h1>$str:title$ $subtitle$</h1>
+    <div class="large-6 columns">
+      <h1 class="subheader">$str:title$ $subtitle$</h1>
       <hr />
     </div>
+<!--
+    <div class="large-3 columns">
+      <dl class="right sub-nav">
+      <dt>Tags:</dt>
+      <dd class="active"><a href="#">All</a></dd>
+      <dd><a href="#">Releases</a></dd>
+      <dd><a href="#">Events</a></dd>
+      <dd><a href="#">Tutorials</a></dd>
+      </dl>
+    </div>
+-->
   </div>
   <!-- End Nav -->
+
   <!-- Main Page Content and Sidebar -->
   <div class="row">
-    <!-- Sidebar -->
-    <aside class="large-3 columns">
-      $sidebar$
-    </aside>
-    <!-- End Sidebar -->
-
 
     <!-- Main Blog Content -->
     <div class="large-9 columns" role="content">
       $posts$
     </div>
     <!-- End Main Content -->
+
+    <!-- Sidebar -->
+    <aside class="large-3 columns panel">
+      $sidebar$
+    </aside>
+    <!-- End Sidebar -->
+
 
   </div>
 
