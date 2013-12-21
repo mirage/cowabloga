@@ -19,7 +19,7 @@ open Foundation
 
 let post ~title ~author ~date ~content =
   let open Link in
-  let (title_text, title_uri) = title in
+  let title_text, title_uri = title in
   <:html<
     <article>
       $date$
@@ -29,54 +29,27 @@ let post ~title ~author ~date ~content =
     </article>
   >>
 
-let t ~title ~subtitle ~sidebar ~posts ~copyright() =
+let t ~title ~subtitle ~sidebar ~posts ~copyright () =
   let subtitle =
     match subtitle with
     | None -> <:html<&>>
     | Some s -> <:html<<small>$str:s$</small>&>>
   in
   <:html<
-
   <div class="row">
     <div class="large-9 columns">
       <h2>$str:title$ $subtitle$</h2>
       <hr />
     </div>
-<!--
-    <div class="large-3 columns">
-      <dl class="right sub-nav">
-      <dt>Tags:</dt>
-      <dd class="active"><a href="#">All</a></dd>
-      <dd><a href="#">Releases</a></dd>
-      <dd><a href="#">Events</a></dd>
-      <dd><a href="#">Tutorials</a></dd>
-      </dl>
-    </div>
--->
   </div>
-  <!-- End Nav -->
-
-  <!-- Main Page Content and Sidebar -->
   <div class="row">
-
-    <!-- Main Blog Content -->
     <div class="large-9 columns" role="content">
       $posts$
     </div>
-    <!-- End Main Content -->
-
-    <!-- Sidebar -->
     <aside class="large-3 columns panel">
       $sidebar$
     </aside>
-    <!-- End Sidebar -->
-
-
   </div>
-
-  <!-- End Main Content and Sidebar -->
-  <!-- Footer -->
-
   <footer class="row">
     <div class="large-12 columns">
       <hr />
@@ -87,4 +60,4 @@ let t ~title ~subtitle ~sidebar ~posts ~copyright() =
       </div>
     </div>
   </footer>
->>
+  >>
