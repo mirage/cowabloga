@@ -55,6 +55,5 @@
 <lib_test/*.ml{,i}>: pkg_cstruct
 <lib_test/serve.{native,byte}>: custom
 # OASIS_STOP
-true: annot
-true: bin_annot
+true: annot, bin_annot, principal, strict_sequence, debug
 true: syntax_camlp4o
