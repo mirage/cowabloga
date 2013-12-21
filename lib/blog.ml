@@ -21,7 +21,6 @@
 open Printf
 open Lwt
 open Cow
-open Cstruct
 
 (** An RSS feed: metadata plus a way to retrieve entries. *)
 type feed = {
