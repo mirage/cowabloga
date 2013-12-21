@@ -36,7 +36,7 @@ let t =
   let sidebar = Foundation.Sidebar.t ~title:"Recent Posts" ~content:recent_posts in
   let copyright = <:html<Anil Madhavapeddy>> in
   let { Blog.title; subtitle } = config in
-  Blog_template.t ~title ~subtitle ~nav_links ~sidebar ~posts ~copyright ()
+  Blog_template.t ~title ~subtitle ~sidebar ~posts ~copyright ()
 
 let index =
   let content = Index_template.t ~top_nav in

@@ -29,7 +29,7 @@ let post ~title ~author ~date ~content =
     </article>
   >>
 
-let t ~title ~subtitle ~nav_links ~sidebar ~posts ~copyright() =
+let t ~title ~subtitle ~sidebar ~posts ~copyright() =
   let subtitle =
     match subtitle with
     | None -> <:html<&>>
@@ -82,10 +82,7 @@ let t ~title ~subtitle ~nav_links ~sidebar ~posts ~copyright() =
       <hr />
       <div class="row">
         <div class="large-6 columns">
-          <p>&copy; Copyright $copyright$</p>
-        </div>
-        <div class="large-6 columns">
-          $Link.bottom_nav nav_links$
+          <p><small>&copy; Copyright $copyright$</small></p>
         </div>
       </div>
     </div>

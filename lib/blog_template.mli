@@ -24,7 +24,6 @@ val post :
 val t :
   title:string ->
   subtitle:string option ->
-  nav_links:Foundation.Link.links ->
   sidebar: Cow.Xml.t ->
   posts:('a Cow.Xml.frag as 'a) Cow.Xml.frag list ->
   copyright:'a Cow.Xml.frag list -> unit -> Cow.Xml.t
