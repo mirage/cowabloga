@@ -15,21 +15,6 @@
  *
  *)
 
-type link = string * Uri.t
-type links = link list
-
-val link : ?cl:string -> link -> Cow.Xml.t
-
-val top_nav : ?align:[ `Left | `Right ] -> links -> Cow.Xml.t
-
-val mk_ul_links : cl:string -> links:('a Cow.Xml.frag as 'a) list list -> Cow.Xml.t
-
-val button_group : links -> Cow.Xml.t
-
-val side_nav : links -> Cow.Xml.t
-
-val bottom_nav : links -> Cow.Xml.t
-
 val post :
   title:string * Uri.t ->
   author:string * Uri.t ->
@@ -39,17 +24,7 @@ val post :
 val t :
   title:string ->
   subtitle:string option ->
-  nav_links:links ->
+  nav_links:Foundation.Link.links ->
   sidebar: Cow.Xml.t ->
   posts:('a Cow.Xml.frag as 'a) Cow.Xml.frag list ->
   copyright:'a Cow.Xml.frag list -> unit -> Cow.Xml.t
-
-module Sidebar : sig
-  type t = [
-   | `link of link
-   | `active_link of link
-   | `divider
-  ]
-
-  val t : title:string -> content:t list -> Cow.Xml.t
-end

@@ -15,6 +15,28 @@
  *
  *)
 
+
+module Link : sig
+  type t = string * Uri.t
+  type links = t list
+
+  val link : ?cl:string -> string * Uri.t -> Cow.Xml.t
+
+  val top_nav : ?align:[< `Left | `Right > `Right ] -> links -> Cow.Xml.t
+  val button_group : links -> Cow.Xml.t
+  val side_nav : links -> Cow.Xml.t
+  val bottom_nav : links -> Cow.Xml.t
+end
+
+module Sidebar : sig
+  type t = [ 
+    | `active_link of Link.t 
+    | `divider 
+    | `link of Link.t 
+  ]
+  val t : title:string -> content:t list -> Cow.Xml.t
+end
+
 val body: title:string -> headers:Cow.Html.t -> content:Cow.Html.t -> Cow.Html.t
 
 val top_nav : title:string -> title_uri:Uri.t -> nav_links:Cow.Html.t -> Cow.Html.t

@@ -20,7 +20,7 @@ let posts =
 
 let t ~nav_links =
   let recent_posts = Blog.recent_posts config Mirage_blog.entries in
-  let sidebar = Blog_template.Sidebar.t ~title:"Recent Posts" ~content:recent_posts in
+  let sidebar = Foundation.Sidebar.t ~title:"Recent Posts" ~content:recent_posts in
   let copyright = <:html<Anil Madhavapeddy>> in
   let { Blog.title; subtitle } = config in
   Blog_template.t ~title ~subtitle ~nav_links ~sidebar ~posts ~copyright ()
@@ -37,7 +37,10 @@ let blog =
   in
   let headers = <:html< >> in
   let content =
-    Foundation.top_nav ~title:"Mirage OS" ~title_uri:(Uri.of_string "/") ~nav_links:(Blog_template.top_nav nav_links)
+    Foundation.top_nav 
+      ~title:"Mirage OS"
+      ~title_uri:(Uri.of_string "/") 
+      ~nav_links:(Foundation.Link.top_nav nav_links)
     @ t ~nav_links
   in
   let body = Foundation.body ~title:"Mirage Musings" ~headers ~content in

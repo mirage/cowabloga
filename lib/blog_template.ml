@@ -15,33 +15,11 @@
  *
  *)
 
-type link = string * Uri.t
-type links = link list
-let link ?(cl="") (txt,uri) =
-  <:html<<a href=$uri:uri$ class=$str:cl$>$str:txt$</a>&>>
 
-let mk_ul_links ~cl ~links =
-  let items = List.map (fun l -> <:html<<li>$l$</li>&>>) links in
-  <:html<<ul class=$str:cl$>$list:items$</ul>&>>
-
-let top_nav ?(align=`Right) (links:links) =
-  let links = List.map link links in
-  let cl = match align with `Right -> "right" | `Left -> "left" in
-  mk_ul_links ~cl ~links
-
-let button_group (links:links) =
-  let links = List.map (link ~cl:"button") links in
-  mk_ul_links ~cl:"button-group" ~links
-
-let side_nav (links:links) =
-  let links = List.map link links in
-  mk_ul_links ~cl:"side-nav" ~links
-
-let bottom_nav (links:links) =
-  let links = List.map link links in
-  mk_ul_links ~cl:"inline-list right" ~links
+open Foundation
 
 let post ~title ~author ~date ~content =
+  let open Link in
   let (title_text, title_uri) = title in
   <:html<
     <article>
@@ -51,30 +29,6 @@ let post ~title ~author ~date ~content =
       $content$
     </article>
   >>
-
-module Sidebar = struct
-  type t = [
-   | `link of link
-   | `active_link of link
-   | `divider
-  ]
-
-  let t ~title ~content =
-    let to_html =
-      function
-      |`link l -> <:html<<li>$link l$</li>&>>
-      |`active_link l -> <:html<<li class="active">$link l$</li>&>>
-      |`divider -> <:html<<li class="divider" />&>>
-    in
-    let rec make = function
-      |[] -> Cow.Html.nil
-      |hd::tl -> <:html<$to_html hd$$make tl$>> in
-    <:html<<h5>$str:title$</h5>
-    <ul class="side-nav">
-    $make content$
-    </ul>
-     >>
-end
 
 let t ~title ~subtitle ~nav_links ~sidebar ~posts ~copyright() =
   let subtitle =
@@ -132,7 +86,7 @@ let t ~title ~subtitle ~nav_links ~sidebar ~posts ~copyright() =
           <p>&copy; Copyright $copyright$</p>
         </div>
         <div class="large-6 columns">
-          $bottom_nav nav_links$
+          $Link.bottom_nav nav_links$
         </div>
       </div>
     </div>

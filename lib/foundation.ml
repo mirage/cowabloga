@@ -15,6 +15,60 @@
  *
  *)
 
+module Link = struct
+  type t = string * Uri.t
+  type links = t list
+  let link ?(cl="") (txt,uri) =
+    <:html<<a href=$uri:uri$ class=$str:cl$>$str:txt$</a>&>>
+
+  let mk_ul_links ~cl ~links =
+    let items = List.map (fun l -> <:html<<li>$l$</li>&>>) links in
+    <:html<<ul class=$str:cl$>$list:items$</ul>&>>
+
+  let top_nav ?(align=`Right) (links:links) =
+    let links = List.map link links in
+    let cl = match align with `Right -> "right" | `Left -> "left" in
+    mk_ul_links ~cl ~links
+
+  let button_group (links:links) =
+    let links = List.map (link ~cl:"button") links in
+    mk_ul_links ~cl:"button-group" ~links
+
+  let side_nav (links:links) =
+    let links = List.map link links in
+    mk_ul_links ~cl:"side-nav" ~links
+
+  let bottom_nav (links:links) =
+    let links = List.map link links in
+    mk_ul_links ~cl:"inline-list right" ~links
+end
+
+module Sidebar = struct
+  type t = [
+   | `link of Link.t
+   | `active_link of Link.t
+   | `divider
+  ]
+
+  open Link
+
+  let t ~title ~content =
+    let to_html =
+      function
+      |`link l -> <:html<<li>$link l$</li>&>>
+      |`active_link l -> <:html<<li class="active">$link l$</li>&>>
+      |`divider -> <:html<<li class="divider" />&>>
+    in
+    let rec make = function
+      |[] -> Cow.Html.nil
+      |hd::tl -> <:html<$to_html hd$$make tl$>> in
+    <:html<<h5>$str:title$</h5>
+    <ul class="side-nav">
+    $make content$
+    </ul>
+     >>
+end
+
 let body ~title ~headers ~content =
   (* Cannot be inlined below as the $ is interpreted as an antiquotation *)
   let js_init = [`Data "$(document).foundation(); hljs.initHighlightingOnLoad();"] in
@@ -42,19 +96,19 @@ let body ~title ~headers ~content =
 
 let top_nav ~title ~title_uri ~nav_links =
   <:html<
-  <div class="contain-to-grid fixed">
-  <nav class="top-bar" data-topbar="">
-  <ul class="title-area">
+    <div class="contain-to-grid fixed">
+    <nav class="top-bar" data-topbar="">
+    <ul class="title-area">
     <li class="name">
       <h1><a href="$uri:title_uri$">$str:title$</a></h1>
     </li>
     <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
-  </ul>
-  <section class="top-bar-section">
+    </ul>
+    <section class="top-bar-section">
       $nav_links$
-  </section>
-  </nav>
-  </div>
+    </section>
+    </nav>
+    </div>
   >>
 
 let page ~body =
