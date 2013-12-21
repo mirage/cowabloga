@@ -30,6 +30,7 @@ opam --git-version
 
 opam init
 eval `opam config env`
+opam install $OPAM_PACKAGES
 ./configure
 make build
 make doc
