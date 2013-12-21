@@ -11,7 +11,7 @@ Library cowabloga
   Path: lib
   Findlibname: cowabloga
   Pack: true
-  Modules: Blog_template, Index_template, Foundation, Date, Blog
+  Modules: Blog_template, Index_template, Foundation, Date, Blog, Wiki
   BuildDepends: cow, cow.syntax, lwt, lwt.syntax, omd, cstruct
 
 Executable atom_fetch
