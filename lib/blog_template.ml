@@ -15,7 +15,6 @@
  *
  *)
 
-
 open Foundation
 
 let post ~title ~author ~date ~content =
@@ -40,7 +39,7 @@ let t ~title ~subtitle ~nav_links ~sidebar ~posts ~copyright() =
 
   <div class="row">
     <div class="large-9 columns">
-      <h1 class="subheader">$str:title$ $subtitle$</h1>
+      <h2>$str:title$ $subtitle$</h2>
       <hr />
     </div>
 <!--
