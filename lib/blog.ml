@@ -44,7 +44,7 @@ module Entry = struct
     body: string;
   }
 
-  (** [permalink feed entry] returns the permalink URI for [entry] in [feed]. 
+  (** [permalink feed entry] returns the permalink URI for [entry] in [feed].
       Until we have URL routing, this assumes /blog as the URI root *)
   let permalink feed entry =
     sprintf "%sblog/%s" feed.base_uri entry.permalink
@@ -140,5 +140,3 @@ let recent_posts ?(active="") feed entries =
       else
         `link link
     ) entries
-
-

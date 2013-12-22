@@ -28,10 +28,10 @@ module Link : sig
 end
 
 module Sidebar : sig
-  type t = [ 
-    | `active_link of Link.t 
-    | `divider 
-    | `link of Link.t 
+  type t = [
+    | `active_link of Link.t
+    | `divider
+    | `link of Link.t
     | `text of string
     | `html of Cow.Html.t
   ]
