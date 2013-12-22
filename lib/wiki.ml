@@ -44,7 +44,7 @@ let atom_date d =
   ( d.year, d.month, d.day, d.hour, d.min)
 
 let short_html_of_date d =
-  <:xml<last modified on $int:d.day$ $xml_of_month d.month$ $int:d.year$>>
+  <:xml<$int:d.day$ $xml_of_month d.month$ $int:d.year$>>
 
 let body_of_entry read_file e =
   match e.body with
@@ -59,7 +59,6 @@ let compare_dates e1 e2 =
 let html_of_entry ?(want_date=false) read_file e =
   let permalink = sprintf "/wiki/%s" e.permalink in
   lwt body = body_of_entry read_file e in
-  let lastmod = sprintf "Last modified on xxx by %s" e.author.Atom.name in
   return <:xml<
     <h3><a href=$str:permalink$>$str:e.subject$</a></h3>
     $body$ >>
@@ -78,20 +77,19 @@ let permalink e =
 let html_of_recent_updates entries =
   let ents = List.rev (List.sort compare_dates entries) in
   let html_of_ent e = <:xml<
-    <a href=$str:permalink e$>$str:e.subject$</a>
-    <i>($short_html_of_date e.updated$)</i>
-    <br />
+    <li><a href=$str:permalink e$>$str:e.subject$</a>
+    <span class="lastmod">($short_html_of_date e.updated$)</span>
+    </li>
   >> in
   <:xml<
-    <div class="wiki_updates">
-    <p><b>Recently Updated</b><br />
+    <h6>Recent Updates</h6>
+    <ul class="side-nav">
     $list:List.map html_of_ent ents$
-    </p>
-    </div>
+    </ul>
   >>
 
 (* Main wiki page; disqus comments are for full entry pages *)
-let html_of_page ?disqus ~content =
+let html_of_page ?disqus ~content ~sidebar =
 
   (* The disqus comment *)
   let disqus_html permalink = <:xml<
@@ -113,14 +111,20 @@ let html_of_page ?disqus ~content =
      | None      -> <:xml< >> in
 
   lwt content = content in
+  let sidebar =
+    match sidebar with 
+    | [] -> [] 
+    | sidebar -> <:xml<<aside class="medium-3 large-3 columns panel">$sidebar$</aside>&>>
+  in
   return <:xml<
     <div class="row">
-      <div class="small-12 large-9 columns">
+      <div class="small-12 medium-10 large-9 columns">
       <h2>Documentation <small> and guides</small></h2>
       <hr />
       </div>
     </div>
     <div class="row">
-      <div class="small-12 large-9 columns">$content$</div>
+      <div class="small-12 medium-10 large-9 columns">$content$</div>
+      $sidebar$
     </div>
   >>

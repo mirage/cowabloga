@@ -82,15 +82,15 @@ let body ~title ~headers ~content =
       <link rel="stylesheet" href="/css/foundation.min.css"> </link>
       <link rel="stylesheet" href="/css/magula.css"> </link>
       <link rel="stylesheet" href="/css/site.css"> </link> 
-      <script src="/js/vendor/highlight.pack.js"> </script>
-      <script src="/js/vendor/jquery.js"> </script>
       <script src="/js/vendor/custom.modernizr.js"> </script>
-      <script src="/js/foundation.js"> </script>
-      <script src="/js/foundation/foundation.topbar.js"> </script>
       $headers$
     </head>
     <body>
       $content$
+      <script src="/js/vendor/jquery.js"> </script>
+      <script src="/js/foundation.js"> </script>
+      <script src="/js/foundation/foundation.topbar.js"> </script>
+      <script src="/js/vendor/highlight.pack.js"> </script>
       <script> $js_init$ </script> 
     </body>
   >>
