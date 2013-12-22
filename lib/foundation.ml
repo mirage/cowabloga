@@ -48,16 +48,18 @@ module Sidebar = struct
    | `link of Link.t
    | `active_link of Link.t
    | `divider
+   | `text of string
+   | `html of Cow.Xml.t
   ]
 
-  open Link
-
   let t ~title ~content =
-    let to_html =
-      function
-      |`link l -> <:html<<li>$link l$</li>&>>
-      |`active_link l -> <:html<<li class="active">$link l$</li>&>>
+    let to_html (x:t) =
+      match x with
+      |`link l -> <:html<<li>$Link.link l$</li>&>>
+      |`active_link l -> <:html<<li class="active">$Link.link l$</li>&>>
       |`divider -> <:html<<li class="divider" />&>>
+      |`html h -> <:html<<li>$h$</li>&>>
+      |`text t -> <:html<<li>$str:t$</li>&>>
     in
     let rec make = function
       |[] -> Cow.Html.nil
@@ -80,10 +82,9 @@ let body ~title ~headers ~content =
       <link rel="stylesheet" href="/css/foundation.min.css"> </link>
       <link rel="stylesheet" href="/css/magula.css"> </link>
       <link rel="stylesheet" href="/css/site.css"> </link> 
-      <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?lang=ml"></script>
-      <script src="/js/vendor/custom.modernizr.js"> </script>
       <script src="/js/vendor/highlight.pack.js"> </script>
       <script src="/js/vendor/jquery.js"> </script>
+      <script src="/js/vendor/custom.modernizr.js"> </script>
       <script src="/js/foundation.js"> </script>
       <script src="/js/foundation/foundation.topbar.js"> </script>
       $headers$
@@ -99,9 +100,7 @@ let top_nav ~title ~title_uri ~nav_links =
     <div class="contain-to-grid fixed">
     <nav class="top-bar" data-topbar="">
     <ul class="title-area">
-    <li class="name">
-      <h1><a href="$uri:title_uri$">$str:title$</a></h1>
-    </li>
+    <li class="name"><h1><a href="$uri:title_uri$">$title$</a></h1></li>
     <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
     </ul>
     <section class="top-bar-section">
