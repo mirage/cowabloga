@@ -15,21 +15,99 @@
  *
  *)
 
+module Link = struct
+  type t = string * Uri.t
+  type links = t list
+  let link ?(cl="") (txt,uri) =
+    <:html<<a href=$uri:uri$ class=$str:cl$>$str:txt$</a>&>>
+
+  let mk_ul_links ~cl ~links =
+    let items = List.map (fun l -> <:html<<li>$l$</li>&>>) links in
+    <:html<<ul class=$str:cl$>$list:items$</ul>&>>
+
+  let top_nav ?(align=`Right) (links:links) =
+    let links = List.map link links in
+    let cl = match align with `Right -> "right" | `Left -> "left" in
+    mk_ul_links ~cl ~links
+
+  let button_group (links:links) =
+    let links = List.map (link ~cl:"button") links in
+    mk_ul_links ~cl:"button-group" ~links
+
+  let side_nav (links:links) =
+    let links = List.map link links in
+    mk_ul_links ~cl:"side-nav" ~links
+
+  let bottom_nav (links:links) =
+    let links = List.map link links in
+    mk_ul_links ~cl:"inline-list right" ~links
+end
+
+module Sidebar = struct
+  type t = [
+   | `link of Link.t
+   | `active_link of Link.t
+   | `divider
+   | `text of string
+   | `html of Cow.Xml.t
+  ]
+
+  let t ~title ~content =
+    let to_html (x:t) =
+      match x with
+      |`link l -> <:html<<li>$Link.link l$</li>&>>
+      |`active_link l -> <:html<<li class="active">$Link.link l$</li>&>>
+      |`divider -> <:html<<li class="divider" />&>>
+      |`html h -> <:html<<li>$h$</li>&>>
+      |`text t -> <:html<<li>$str:t$</li>&>>
+    in
+    let rec make = function
+      |[] -> Cow.Html.nil
+      |hd::tl -> <:html<$to_html hd$$make tl$>> in
+    <:html<<h5>$str:title$</h5>
+    <ul class="side-nav">
+    $make content$
+    </ul>
+     >>
+end
+
 let body ~title ~headers ~content =
+  (* Cannot be inlined below as the $ is interpreted as an antiquotation *)
+  let js_init = [`Data "$(document).foundation(); hljs.initHighlightingOnLoad();"] in
   <:html<
     <head>
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width"/>
       <title>$str:title$</title>
       <link rel="stylesheet" href="/css/foundation.min.css"> </link>
-      <link rel="stylesheet" href="/css/site.css"> </link>
+      <link rel="stylesheet" href="/css/magula.css"> </link>
+      <link rel="stylesheet" href="/css/site.css"> </link> 
       <script src="/js/vendor/custom.modernizr.js"> </script>
-
       $headers$
     </head>
     <body>
       $content$
+      <script src="/js/vendor/jquery.js"> </script>
+      <script src="/js/foundation.js"> </script>
+      <script src="/js/foundation/foundation.topbar.js"> </script>
+      <script src="/js/vendor/highlight.pack.js"> </script>
+      <script> $js_init$ </script> 
     </body>
+  >>
+
+let top_nav ~title ~title_uri ~nav_links =
+  <:html<
+    <div class="contain-to-grid fixed">
+    <nav class="top-bar" data-topbar="">
+    <ul class="title-area">
+    <li class="name"><h1><a href="$uri:title_uri$">$title$</a></h1></li>
+    <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+    </ul>
+    <section class="top-bar-section">
+      $nav_links$
+    </section>
+    </nav>
+    </div>
   >>
 
 let page ~body =

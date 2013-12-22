@@ -4,36 +4,47 @@ open Lwt
 let read_entry ent =
   match Mirage_entries.read ent with
   | None -> return <:html<$str:"???"$>>
-  | Some b ->
-    let md = Cow.Markdown.of_string b in
-    return (Cow.Markdown.to_html md)
+  | Some b -> return (Cow.Markdown.of_string b)
 
 let config = {
   Blog.base_uri="http://localhost:8081";
   id = "";
-  title = "OpenMirage";
-  subtitle = Some "the development blog";
+  title = "The Mirage Blog";
+  subtitle = Some "on building functional operating systems";
   rights = Mirage_people.rights;
   read_entry
 }
 
-let posts =
-  Lwt_unix.run (Blog.to_html config Mirage_blog.entries)
+let posts = Lwt_unix.run (Blog.to_html config Mirage_blog.entries)
+ 
+let nav_links = [
+    "Blog", Uri.of_string "/blog";
+    "Docs", Uri.of_string "/docs";
+    "API", Uri.of_string "/api";
+    "Community", Uri.of_string "/community";
+    "About", Uri.of_string "/about";
+  ] 
+
+let top_nav =
+  Foundation.top_nav 
+    ~title:<:html<"Mirage OS">>
+    ~title_uri:(Uri.of_string "/") 
+    ~nav_links:(Foundation.Link.top_nav ~align:`Left nav_links)
 
 let t =
-  let uri = Uri.of_string in
-  let nav_links = [
-    "home",    uri "/";
-    "blog",    uri "/blog";
-    "contact", uri "/contact" ]
-  in
   let recent_posts = Blog.recent_posts config Mirage_blog.entries in
-  let sidebar = Blog_template.Sidebar.t ~title:"Recent Posts" ~content:recent_posts in
+  let sidebar = Foundation.Sidebar.t ~title:"Recent Posts" ~content:recent_posts in
   let copyright = <:html<Anil Madhavapeddy>> in
   let { Blog.title; subtitle } = config in
-  Blog_template.t ~title ~subtitle ~nav_links ~sidebar ~posts ~copyright ()
+  Blog_template.t ~title ~subtitle ~sidebar ~posts ~copyright ()
+
+let index =
+  let content = Index_template.t ~top_nav in
+  let body = Foundation.body ~title:"Mirage OS" ~headers:[] ~content in
+  Foundation.page ~body
 
 let blog =
   let headers = <:html< >> in
-  let body = Foundation.body ~title:"Mirage Musings" ~headers ~content:t in
+  let content = top_nav @ t in
+  let body = Foundation.body ~title:"Mirage Musings" ~headers ~content in
   Foundation.page ~body

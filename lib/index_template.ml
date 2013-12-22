@@ -15,15 +15,18 @@
  *
  *)
 
-val post :
-  title:string * Uri.t ->
-  author:string * Uri.t ->
-  date:Cow.Html.t ->
-  content:Cow.Html.t -> Cow.Html.t
+open Foundation
 
-val t :
-  title:string ->
-  subtitle:string option ->
-  sidebar: Cow.Xml.t ->
-  posts:('a Cow.Xml.frag as 'a) Cow.Xml.frag list ->
-  copyright:'a Cow.Xml.frag list -> unit -> Cow.Xml.t
+(* Basic index placeholder page. Will have more of an activity stream *)
+
+let t ~top_nav =
+  let content = <:html<
+   $top_nav$
+   <br />
+   <div class="row">
+    <div class="large-12 columns">
+      <img src="http://placehold.it/1000x400&amp;text=img"></img>
+      <hr />
+    </div>
+  </div> >> in
+  content

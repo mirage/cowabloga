@@ -21,7 +21,6 @@
 open Printf
 open Lwt
 open Cow
-open Cstruct
 
 (** An RSS feed: metadata plus a way to retrieve entries. *)
 type feed = {
@@ -45,9 +44,10 @@ module Entry = struct
     body: string;
   }
 
-  (** [permalink feed entry] returns the permalink URI for [entry] in [feed]. *)
+  (** [permalink feed entry] returns the permalink URI for [entry] in [feed]. 
+      Until we have URL routing, this assumes /blog as the URI root *)
   let permalink feed entry =
-    sprintf "%s%s" feed.base_uri entry.permalink
+    sprintf "%sblog/%s" feed.base_uri entry.permalink
 
   (** Compare two entries. *)
   let compare a b =
@@ -141,11 +141,4 @@ let recent_posts ?(active="") feed entries =
         `link link
     ) entries
 
-(** [read_content store prefix f] reads content [prefix/f] from [store]. *)
-let read_content read prefix f =
-  match_lwt read (prefix ^ f) with
-  | None -> return <:html<$str:"???"$>>
-  | Some b ->
-    let string_of_stream s = Lwt_stream.to_list s >|= Cstruct.copyv in
-    lwt str = string_of_stream b in
-    return (Markdown_omd.of_string str)
+
