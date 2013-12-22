@@ -27,7 +27,7 @@ let nav_links = [
 
 let top_nav =
   Foundation.top_nav 
-    ~title:"Mirage OS"
+    ~title:<:html<"Mirage OS">>
     ~title_uri:(Uri.of_string "/") 
     ~nav_links:(Foundation.Link.top_nav ~align:`Left nav_links)
 
