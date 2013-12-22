@@ -81,17 +81,17 @@ let body ~title ~headers ~content =
       <title>$str:title$</title>
       <link rel="stylesheet" href="/css/foundation.min.css"> </link>
       <link rel="stylesheet" href="/css/magula.css"> </link>
-      <link rel="stylesheet" href="/css/site.css"> </link> 
+      <link rel="stylesheet" href="/css/site.css"> </link>
       <script src="/js/vendor/custom.modernizr.js"> </script>
       $headers$
     </head>
     <body>
       $content$
-      <script src="/js/vendor/jquery.js"> </script>
-      <script src="/js/foundation.js"> </script>
+      <script src="/js/vendor/jquery.min.js"> </script>
+      <script src="/js/foundation.min.js"> </script>
       <script src="/js/foundation/foundation.topbar.js"> </script>
       <script src="/js/vendor/highlight.pack.js"> </script>
-      <script> $js_init$ </script> 
+      <script> $js_init$ </script>
     </body>
   >>
 
