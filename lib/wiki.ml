@@ -165,11 +165,7 @@ let to_atom ~feed ~entries =
   let mk_uri x = Uri.of_string (feed.base_uri ^ x) in
   let es = List.rev (List.sort cmp_ent entries) in
   let updated = atom_date (List.hd es).updated in
-  let id = feed.base_uri in
-(*
-  let title = "openmirage wiki" in
-  let subtitle = Some "a cloud operating system" in
-*)
+  let id = feed.base_uri ^ "wiki/" in
   let links = [
     Atom.mk_link (mk_uri "atom.xml");
     Atom.mk_link ~rel:`alternate ~typ:"text/html" (mk_uri "")
