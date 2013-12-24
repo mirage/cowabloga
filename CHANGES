@@ -1,5 +1,6 @@
 0.0.2 (2013-12-24):
 * Factor Wiki support to better support independent sites.
+* Add an `Atom_feed` module to drive both the blog and wiki modules.
 
 0.0.1 (2013-12-22):
 * Initial public release.

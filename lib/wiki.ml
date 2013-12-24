@@ -21,6 +21,7 @@
 open Printf
 open Lwt
 open Cow
+open Atom_feed
 open Date
 
 type body =
@@ -37,8 +38,10 @@ type entry = {
 
 let html_of_author author =
   match author.Atom.uri with
-  | None     -> <:html<Last modified by $str:author.Atom.name$>>
-  | Some uri -> <:html<Last modified by <a href=$str:uri$>$str:author.Atom.name$</a>&>>
+  | None     ->
+    <:html<Last modified by $str:author.Atom.name$>>
+  | Some uri ->
+    <:html<Last modified by <a href=$str:uri$>$str:author.Atom.name$</a>&>>
 
 let atom_date d =
   ( d.year, d.month, d.day, d.hour, d.min)
@@ -46,9 +49,9 @@ let atom_date d =
 let short_html_of_date d =
   <:xml<$int:d.day$ $xml_of_month d.month$ $int:d.year$>>
 
-let body_of_entry read_file e =
+let body_of_entry {read_entry} e =
   match e.body with
-  | File x -> read_file x
+  | File x -> read_entry x
   | Html x -> return x
 
 let compare_dates e1 e2 =
@@ -63,21 +66,21 @@ let html_of_entry ?(want_date=false) read_file e =
     <h3><a href=$str:permalink$>$str:e.subject$</a></h3>
     $body$ >>
 
-let html_of_index read_file =
-  lwt body = read_file "index.md" in
+let html_of_index feed =
+  lwt body = feed.read_entry "index.md" in
   return <:xml<
     <div class="wiki_entry">
      <div class="wiki_entry_body">$body$</div>
    </div>
  >>
 
-let permalink e =
-  sprintf "/wiki/%s" e.permalink
+let permalink feed e =
+  sprintf "%swiki/%s" feed.base_uri e.permalink
 
-let html_of_recent_updates entries =
+let html_of_recent_updates feed (entries:entry list) =
   let ents = List.rev (List.sort compare_dates entries) in
   let html_of_ent e = <:xml<
-    <li><a href=$str:permalink e$>$str:e.subject$</a>
+    <li><a href=$str:permalink feed e$>$str:e.subject$</a>
     <span class="lastmod">($short_html_of_date e.updated$)</span>
     </li>
   >> in
@@ -114,13 +117,16 @@ let html_of_page ?disqus ~content ~sidebar =
   let sidebar =
     match sidebar with 
     | [] -> [] 
-    | sidebar -> <:xml<<aside class="medium-3 large-3 columns panel">$sidebar$</aside>&>>
-  in
+    | sidebar ->
+       <:xml<
+         <aside class="medium-3 large-3 columns panel">
+           $sidebar$
+         </aside>
+       >> in
   return <:xml<
     <div class="row">
       <div class="small-12 medium-10 large-9 columns">
       <h2>Documentation <small> and guides</small></h2>
-      <hr />
       </div>
     </div>
     <div class="row">
@@ -128,3 +134,55 @@ let html_of_page ?disqus ~content ~sidebar =
       $sidebar$
     </div>
   >>
+
+let cmp_ent a b =
+  Atom.compare (atom_date a.updated) (atom_date b.updated)
+
+let permalink_exists x entries =
+  List.exists (fun e -> e.permalink = x) entries
+
+let atom_entry_of_ent (feed:Atom_feed.t) e =
+  let perma_uri = Uri.of_string (permalink feed e) in
+  let links = [ Atom.mk_link ~rel:`alternate ~typ:"text/html" perma_uri ] in
+  lwt content = body_of_entry feed e in
+  let meta = {
+    Atom.id      = Uri.to_string perma_uri;
+    title        = e.subject;
+    subtitle     = None;
+    author       = Some e.author;
+    updated      = atom_date e.updated;
+    rights =       feed.rights;
+    links;
+  } in
+  return {
+    Atom.entry = meta;
+    summary    = None;
+    base       = None;
+    content
+  }
+
+let to_atom ~feed ~entries =
+  let mk_uri x = Uri.of_string (feed.base_uri ^ x) in
+  let es = List.rev (List.sort cmp_ent entries) in
+  let updated = atom_date (List.hd es).updated in
+  let id = feed.base_uri in
+(*
+  let title = "openmirage wiki" in
+  let subtitle = Some "a cloud operating system" in
+*)
+  let links = [
+    Atom.mk_link (mk_uri "atom.xml");
+    Atom.mk_link ~rel:`alternate ~typ:"text/html" (mk_uri "")
+  ] in
+  lwt entries = Lwt_list.map_s (atom_entry_of_ent feed) es in
+  let feed = {
+    Atom.id;
+    title = feed.title;
+    subtitle = feed.subtitle;
+    author = feed.Atom_feed.author;
+    rights = feed.rights;
+    updated;
+    links 
+  } in
+  return { Atom.feed=feed; entries }
+
