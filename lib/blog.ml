@@ -126,7 +126,7 @@ let to_atom ~feed ~entries =
 let recent_posts ?(active="") feed entries =
   let entries = List.sort Entry.compare entries in
   List.map (fun e ->
-      let link = Entry.(e.subject, Uri.of_string (permalink feed e)) in
+      let link = Entry.(e.subject, Uri.of_string (Entry.permalink feed e)) in
       if e.Entry.subject = active then
         `active_link link
       else
