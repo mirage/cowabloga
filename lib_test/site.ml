@@ -7,11 +7,12 @@ let read_entry ent =
   | Some b -> return (Cow.Markdown.of_string b)
 
 let config = {
-  Blog.base_uri="http://localhost:8081";
+  Atom_feed.base_uri="http://localhost:8081";
   id = "";
   title = "The Mirage Blog";
   subtitle = Some "on building functional operating systems";
   rights = Mirage_people.rights;
+  author = None;
   read_entry
 }
 
@@ -35,7 +36,7 @@ let t =
   let recent_posts = Blog.recent_posts config Mirage_blog.entries in
   let sidebar = Foundation.Sidebar.t ~title:"Recent Posts" ~content:recent_posts in
   let copyright = <:html<Anil Madhavapeddy>> in
-  let { Blog.title; subtitle } = config in
+  let { Atom_feed.title; subtitle } = config in
   Blog_template.t ~title ~subtitle ~sidebar ~posts ~copyright ()
 
 let index =

@@ -39,7 +39,6 @@ let t ~title ~subtitle ~sidebar ~posts ~copyright () =
   <div class="row">
     <div class="large-9 columns">
       <h2>$str:title$ $subtitle$</h2>
-      <hr />
     </div>
   </div>
   <div class="row">
