@@ -56,8 +56,8 @@ let to_html ?limit feeds =
     try
       (match limit with |Some x when i > x -> raise Not_found |_ -> ());
       let uri =
-        List.find (fun l -> l.rel = `alternate && l.typ = Some "text/html") entry.links
-        |> fun l -> l.href in
+        let l = List.find (fun l -> l.rel = `alternate && l.typ = Some "text/html") entry.links in
+        l.href in
       let (y,m,d,_,_) = entry.updated in
       let date = Printf.sprintf "(%d %s %d)" d (Date.short_string_of_month m) y in
       <:html<
