@@ -1,6 +1,6 @@
 OASISFormat: 0.3
 Name:        cowabloga
-Version:     0.0.2
+Version:     0.0.3
 Synopsis:    Blog templates using Cow and Omd
 Authors:     Anil Madhavapeddy, Richard Mortier
 License:     ISC
@@ -11,7 +11,7 @@ Library cowabloga
   Path: lib
   Findlibname: cowabloga
   Pack: true
-  Modules: Atom_feed,Blog_template, Index_template, Foundation, Date, Blog, Wiki
+  Modules: Atom_feed,Blog_template, Index_template, Foundation, Date, Blog, Wiki, Feed
   BuildDepends: cow, cow.syntax, lwt, lwt.syntax, omd, cstruct
 
 Executable atom_fetch
