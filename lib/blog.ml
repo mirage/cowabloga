@@ -21,17 +21,9 @@
 open Printf
 open Lwt
 open Cow
+open Atom_feed
 
-(** An RSS feed: metadata plus a way to retrieve entries. *)
-type feed = {
-  title: string;
-  subtitle: string option;
-  base_uri: string;
-  id: string;
-  rights: string option;
-  read_entry: string -> Cow.Html.t Lwt.t;
-}
-
+(** An Atom feed: metadata plus a way to retrieve entries. *)
 (** A feed is made up of Entries. *)
 module Entry = struct
 
@@ -124,8 +116,8 @@ let to_atom ~feed ~entries =
     Atom.mk_link (Uri.of_string (base_uri ^ id ^ "/atom.xml"));
     Atom.mk_link ~rel:`alternate ~typ:"text/html" (Uri.of_string base_uri)
   ] in
-  let atom_feed =
-    { Atom.id; title; subtitle; author=None; rights; updated; links }
+  let atom_feed = { Atom.id; title; subtitle;
+    author=feed.author; rights; updated; links }
   in
   lwt entries = Lwt_list.map_s (Entry.to_atom feed) entries in
   return { Atom.feed=atom_feed; entries }
@@ -134,7 +126,7 @@ let to_atom ~feed ~entries =
 let recent_posts ?(active="") feed entries =
   let entries = List.sort Entry.compare entries in
   List.map (fun e ->
-      let link = Entry.(e.subject, Uri.of_string (permalink feed e)) in
+      let link = Entry.(e.subject, Uri.of_string (Entry.permalink feed e)) in
       if e.Entry.subject = active then
         `active_link link
       else

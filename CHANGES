@@ -1,0 +1,10 @@
+0.0.3 (trunk):
+* Fix blog template columns to work better on small devices.
+* Add a `Feed` module that aggregates together all the other feeds (Blog/Wiki).
+
+0.0.2 (2013-12-24):
+* Factor Wiki support to better support independent sites.
+* Add an `Atom_feed` module to drive both the blog and wiki modules.
+
+0.0.1 (2013-12-22):
+* Initial public release.

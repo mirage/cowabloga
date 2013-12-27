@@ -39,14 +39,13 @@ let t ~title ~subtitle ~sidebar ~posts ~copyright () =
   <div class="row">
     <div class="large-9 columns">
       <h2>$str:title$ $subtitle$</h2>
-      <hr />
     </div>
   </div>
   <div class="row">
-    <div class="large-9 columns" role="content">
+    <div class="small-12 large-9 columns" role="content">
       $posts$
     </div>
-    <aside class="large-3 columns panel">
+    <aside class="small-6 large-3 columns panel">
       $sidebar$
     </aside>
   </div>
