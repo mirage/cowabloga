@@ -22,17 +22,20 @@ open Cow
 type feed = [
   | `Blog of Atom_feed.t * Blog.Entry.t list
   | `Wiki of Atom_feed.t * Wiki.entry list
+  | `Links of Atom_feed.t * Links.t list
 ]
 
 let feed_icon =
   function
   | `Blog _ -> "fa-comment"
   | `Wiki _ -> "fa-book"
+  | `Links _ -> "fa-external-link"
 
 let feed_uri =
   function
   | `Blog f -> f.Atom_feed.base_uri ^ "blog/" (* TODO: Proper URL routing *)
   | `Wiki f -> f.Atom_feed.base_uri ^ "wiki/"
+  | `Links f -> f.Atom_feed.base_uri ^ "links/"
 
 let to_atom_entries (feeds:feed list) =
   Lwt_list.map_s (
@@ -43,6 +46,9 @@ let to_atom_entries (feeds:feed list) =
     | `Wiki (feed,entries) -> 
         Wiki.to_atom ~feed ~entries
         >|= fun c -> List.map (fun e -> (e, `Wiki feed)) c.Atom.entries
+    | `Links (feed,entries) -> 
+        Links.to_atom ~feed ~entries
+        >|= fun c -> List.map (fun e -> (e, `Links feed)) c.Atom.entries
   ) feeds
   >|= List.flatten
   >|= List.sort (fun (a,_) (b,_) -> Atom.(compare b.entry.updated a.entry.updated))

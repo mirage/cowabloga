@@ -73,5 +73,8 @@ let html_of_date d =
 let date (year, month, day, hour, min) =
   { month; day; year; hour; min }
 
+let day (year, month, day) =
+  { month; day; year; hour=0; min=0 }
+
 let atom_date d =
   ( d.year, d.month, d.day, d.hour, d.min)
