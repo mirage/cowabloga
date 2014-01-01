@@ -41,11 +41,11 @@ let t =
 
 let index =
   let content = Index_template.t ~top_nav in
-  let body = Foundation.body ~title:"Mirage OS" ~headers:[] ~content in
+  let body = Foundation.body ~title:"Mirage OS" ~headers:[] ~content () in
   Foundation.page ~body
 
 let blog =
   let headers = <:html< >> in
   let content = top_nav @ t in
-  let body = Foundation.body ~title:"Mirage Musings" ~headers ~content in
+  let body = Foundation.body ~title:"Mirage Musings" ~headers ~content () in
   Foundation.page ~body
