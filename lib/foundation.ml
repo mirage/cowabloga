@@ -77,12 +77,12 @@ let body ?google_analytics ~title ~headers ~content () =
   let ga =
     match google_analytics with
     | None -> []
-    | Some a -> <:html<
+    | Some (a,d) -> <:html<
          <script type="text/javascript">
            //<![CDATA[
            var _gaq = _gaq || [];
            _gaq.push(['_setAccount', '$[`Data a]$']);
-           _gaq.push(['_setDomainName', 'openmirage.org']);
+           _gaq.push(['_setDomainName', '$[`Data d]$']);
            _gaq.push(['_trackPageview']);
 
            (function() {
