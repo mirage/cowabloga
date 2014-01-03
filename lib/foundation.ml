@@ -108,7 +108,7 @@ let body ?google_analytics ~title ~headers ~content () =
     <body>
       $content$
       <script src="/js/vendor/jquery.min.js"> </script>
-      <script src="/js/foundation.min.js"> </script>
+      <script src="/js/foundation/foundation.min.js"> </script>
       <script src="/js/foundation/foundation.topbar.js"> </script>
       <script src="/js/vendor/highlight.pack.js"> </script>
       <script> $js_init$ </script>
