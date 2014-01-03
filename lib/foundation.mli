@@ -38,7 +38,7 @@ module Sidebar : sig
   val t : title:string -> content:t list -> Cow.Xml.t
 end
 
-val body: title:string -> headers:Cow.Html.t -> content:Cow.Html.t -> Cow.Html.t
+val body: ?google_analytics:(string * string) -> title:string -> headers:Cow.Html.t -> content:Cow.Html.t -> unit -> Cow.Html.t
 
 val top_nav : title:Cow.Html.t -> title_uri:Uri.t -> nav_links:Cow.Html.t -> Cow.Html.t
 

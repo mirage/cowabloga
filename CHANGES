@@ -1,6 +1,8 @@
 0.0.3 (trunk):
+* Add a `Link` module for keeping track of external articles.
 * Fix blog template columns to work better on small devices.
 * Add a `Feed` module that aggregates together all the other feeds (Blog/Wiki).
+* Add a Google Analytics option to `Foundation.body`.
 
 0.0.2 (2013-12-24):
 * Factor Wiki support to better support independent sites.
