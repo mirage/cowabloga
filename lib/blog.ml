@@ -36,10 +36,9 @@ module Entry = struct
     body: string;
   }
 
-  (** [permalink feed entry] returns the permalink URI for [entry] in [feed].
-      Until we have URL routing, this assumes /blog as the URI root *)
+  (** [permalink feed entry] returns the permalink URI for [entry] in [feed]. *)
   let permalink feed entry =
-    sprintf "%sblog/%s" feed.base_uri entry.permalink
+    sprintf "%s%s" feed.base_uri entry.permalink
 
   (** Compare two entries. *)
   let compare a b =
