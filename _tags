@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 6868e98056ea1a0a35ca5bbc80087a17)
+# DO NOT EDIT (digest: c749a77036d98c0e907b13b1316b3364)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
@@ -24,6 +24,7 @@
 "lib/wiki.cmx": for-pack(Cowabloga)
 "lib/feed.cmx": for-pack(Cowabloga)
 "lib/links.cmx": for-pack(Cowabloga)
+"lib/headers.cmx": for-pack(Cowabloga)
 <lib/*.ml{,i}>: pkg_cow.syntax
 <lib/*.ml{,i}>: pkg_cow
 <lib/*.ml{,i}>: pkg_lwt
