@@ -12,7 +12,7 @@ Library cowabloga
   Findlibname: cowabloga
   Pack: true
   Modules: Atom_feed,Blog_template, Index_template, Foundation, Date, Blog,
-    Wiki, Feed, Links, Headers
+    Wiki, Feed, Links, Headers, Bootstrap
   BuildDepends: cow, cow.syntax, lwt, lwt.syntax, omd, cstruct
 
 Executable atom_fetch
