@@ -30,15 +30,15 @@ module Entry : sig
   val to_atom : Atom_feed.t -> t -> Cow.Atom.entry Lwt.t
 end
 
-val to_html : 
-  ?sep:Cow.Xml.t -> 
-  feed:Atom_feed.t -> 
-  entries:Entry.t list -> 
+val to_html :
+  ?sep:Cow.Xml.t ->
+  feed:Atom_feed.t ->
+  entries:Entry.t list ->
   Cow.Xml.t Lwt.t
 
 val to_atom :
-  feed:Atom_feed.t -> 
-  entries:Entry.t list -> 
+  feed:Atom_feed.t ->
+  entries:Entry.t list ->
   Cow.Atom.feed Lwt.t
 
 val recent_posts :
