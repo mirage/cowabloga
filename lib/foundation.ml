@@ -143,7 +143,7 @@ let top_nav ~title ~title_uri ~nav_links =
 let page ~body =
   Printf.sprintf "\
 <!DOCTYPE html>
-  <!--[if IE 8]><html class=\"no-js lt-ie9\" lang=\"en\" ><![endif]-->
-  <!--[if gt IE 8]><!--><html class=\"no-js\" lang=\"en\" ><!--<![endif]-->
+  <!--[if IE 8]><html class=\"no-js lt-ie9\" lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\"><![endif]-->
+  <!--[if gt IE 8]><!--><html class=\"no-js\" lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\"><!--<![endif]-->
   %s
 </html>" (Cow.Html.to_string body)
