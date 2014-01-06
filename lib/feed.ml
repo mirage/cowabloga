@@ -79,6 +79,7 @@ let permalink feed id = Printf.sprintf "%supdates/%s" feed.Atom_feed.base_uri id
 let to_atom ~meta ~feeds =
     let open Atom_feed in
     let { title; subtitle; base_uri; id; rights } = meta in
+    let id = base_uri ^ id in
     lwt entries = to_atom_entries feeds >|= List.map fst in
     let updated = (List.hd entries).Atom.entry.Atom.updated in
     let links = [

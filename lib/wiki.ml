@@ -60,10 +60,9 @@ let compare_dates e1 e2 =
 
 (* Convert a wiki record into an Html.t fragment *)
 let html_of_entry ?(want_date=false) read_file e =
-  let permalink = sprintf "/wiki/%s" e.permalink in
   lwt body = body_of_entry read_file e in
   return <:xml<
-    <h3><a href=$str:permalink$>$str:e.subject$</a></h3>
+    <h3><a href=$str:e.permalink$>$str:e.subject$</a></h3>
     $body$ >>
 
 let html_of_index feed =
@@ -75,7 +74,7 @@ let html_of_index feed =
  >>
 
 let permalink feed e =
-  sprintf "%swiki/%s" feed.base_uri e.permalink
+  sprintf "%s%s%s" feed.base_uri feed.id e.permalink
 
 let html_of_recent_updates feed (entries:entry list) =
   let ents = List.rev (List.sort compare_dates entries) in
@@ -99,7 +98,7 @@ let html_of_page ?disqus ~content ~sidebar =
     <div class="wiki_entry_comments">
     <div id="disqus_thread"/>
     <script type="text/javascript">
-      var disqus_identifer = '/wiki/$str:permalink$';
+      var disqus_identifer = '$str:permalink$';
       (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
          dsq.src = 'http://openmirage.disqus.com/embed.js';
@@ -162,10 +161,12 @@ let atom_entry_of_ent (feed:Atom_feed.t) e =
   }
 
 let to_atom ~feed ~entries =
-  let mk_uri x = Uri.of_string (feed.base_uri ^ x) in
+  let { title; subtitle; base_uri; id; rights } = feed in
+  let id = base_uri ^ id in
+  let mk_uri x = Uri.of_string (id ^ x) in
+
   let es = List.rev (List.sort cmp_ent entries) in
   let updated = atom_date (List.hd es).updated in
-  let id = feed.base_uri ^ "wiki/" in
   let links = [
     Atom.mk_link (mk_uri "atom.xml");
     Atom.mk_link ~rel:`alternate ~typ:"text/html" (mk_uri "")
@@ -173,10 +174,10 @@ let to_atom ~feed ~entries =
   lwt entries = Lwt_list.map_s (atom_entry_of_ent feed) es in
   let feed = {
     Atom.id;
-    title = feed.title;
-    subtitle = feed.subtitle;
+    title;
+    subtitle;
     author = feed.Atom_feed.author;
-    rights = feed.rights;
+    rights;
     updated;
     links
   } in
