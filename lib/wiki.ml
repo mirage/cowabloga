@@ -115,8 +115,8 @@ let html_of_page ?disqus ~content ~sidebar =
 
   lwt content = content in
   let sidebar =
-    match sidebar with 
-    | [] -> [] 
+    match sidebar with
+    | [] -> []
     | sidebar ->
        <:xml<
          <aside class="medium-3 large-3 columns panel">
@@ -178,7 +178,6 @@ let to_atom ~feed ~entries =
     author = feed.Atom_feed.author;
     rights = feed.rights;
     updated;
-    links 
+    links
   } in
   return { Atom.feed=feed; entries }
-
