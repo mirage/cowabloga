@@ -18,7 +18,8 @@
 (** Some default HTTP response types as HTTP headers; taken from
     http://www.iana.org/assignments/media-types/ *)
 
-let xhtml = ["content-type", "text/html; charset=UTF-8"]
+let html = ["content-type", "text/html; charset=UTF-8"]
+let xhtml = ["content-type", "application/xhtml+xml; charset=UTF-8"]
 let css = ["content-type", "text/css; charset=UTF-8"]
 
 let atom = ["content-type", "application/atom+xml; charset=UTF-8"]
