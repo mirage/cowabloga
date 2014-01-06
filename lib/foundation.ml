@@ -71,9 +71,19 @@ module Sidebar = struct
      >>
 end
 
-let body ?google_analytics ~title ~headers ~content () =
+let body ?google_analytics ?highlight
+      ~title ~headers ~content () =
   (* Cannot be inlined below as the $ is interpreted as an antiquotation *)
-  let js_init = [`Data "$(document).foundation(); hljs.initHighlightingOnLoad();"] in
+  let js_init = [`Data "$(document).foundation();"] in
+  let highlight_css, highlight_trailer = match highlight with
+    | None -> <:html< >>, <:html< >>
+    | Some style ->
+      <:html< <link rel="stylesheet" href="$str:style$"> </link> >>,
+      <:html<
+        <script src="/js/vendor/highlight.pack.js"> </script>
+        <script> hljs.initHighlightingOnLoad(); </script>
+      >>
+  in
   let ga =
     match google_analytics with
     | None -> []
@@ -99,19 +109,19 @@ let body ?google_analytics ~title ~headers ~content () =
       <meta name="viewport" content="width=device-width"/>
       <title>$str:title$</title>
       <link rel="stylesheet" href="/css/foundation.min.css"> </link>
-      <link rel="stylesheet" href="/css/magula.css"> </link>
-      <link rel="stylesheet" href="/css/site.css"> </link> 
+      <link rel="stylesheet" href="/css/site.css"> </link>
       <script src="/js/vendor/custom.modernizr.js"> </script>
+      $highlight_css$
       $ga$
       $headers$
     </head>
     <body>
       $content$
-      <script src="/js/vendor/jquery.js"> </script>
-      <script src="/js/foundation.js"> </script>
+      <script src="/js/vendor/jquery.min.js"> </script>
+      <script src="/js/foundation/foundation.min.js"> </script>
       <script src="/js/foundation/foundation.topbar.js"> </script>
-      <script src="/js/vendor/highlight.pack.js"> </script>
-      <script> $js_init$ </script> 
+      <script> $js_init$ </script>
+      $highlight_trailer$
     </body>
   >>
 
@@ -133,7 +143,7 @@ let top_nav ~title ~title_uri ~nav_links =
 let page ~body =
   Printf.sprintf "\
 <!DOCTYPE html>
-  <!--[if IE 8]><html class=\"no-js lt-ie9\" lang=\"en\" ><![endif]-->
-  <!--[if gt IE 8]><!--><html class=\"no-js\" lang=\"en\" ><!--<![endif]-->
+  <!--[if IE 8]><html class=\"no-js lt-ie9\" lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\"><![endif]-->
+  <!--[if gt IE 8]><!--><html class=\"no-js\" lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\"><!--<![endif]-->
   %s
 </html>" (Cow.Html.to_string body)

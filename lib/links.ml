@@ -78,7 +78,6 @@ let to_atom ~feed ~entries =
     author = feed.Atom_feed.author;
     rights = feed.rights;
     updated;
-    links 
+    links
   } in
   return { Atom.feed=feed; entries }
-

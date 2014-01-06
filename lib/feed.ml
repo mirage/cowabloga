@@ -43,16 +43,16 @@ let to_atom_entries (feeds:feed list) =
     | `Blog (feed,entries) ->
         Blog.to_atom ~feed ~entries
         >|= fun c -> List.map (fun e -> (e, `Blog feed)) c.Atom.entries
-    | `Wiki (feed,entries) -> 
+    | `Wiki (feed,entries) ->
         Wiki.to_atom ~feed ~entries
         >|= fun c -> List.map (fun e -> (e, `Wiki feed)) c.Atom.entries
-    | `Links (feed,entries) -> 
+    | `Links (feed,entries) ->
         Links.to_atom ~feed ~entries
         >|= fun c -> List.map (fun e -> (e, `Links feed)) c.Atom.entries
   ) feeds
   >|= List.flatten
   >|= List.sort (fun (a,_) (b,_) -> Atom.(compare b.entry.updated a.entry.updated))
- 
+
 let to_html ?limit feeds =
   let open Atom in
   to_atom_entries feeds
@@ -79,6 +79,7 @@ let permalink feed id = Printf.sprintf "%supdates/%s" feed.Atom_feed.base_uri id
 let to_atom ~meta ~feeds =
     let open Atom_feed in
     let { title; subtitle; base_uri; id; rights } = meta in
+    let id = base_uri ^ id in
     lwt entries = to_atom_entries feeds >|= List.map fst in
     let updated = (List.hd entries).Atom.entry.Atom.updated in
     let links = [
@@ -89,4 +90,3 @@ let to_atom ~meta ~feeds =
       rights; updated; links }
     in
     return { Atom.feed=atom_feed; entries }
-

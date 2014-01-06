@@ -17,19 +17,19 @@ let config = {
 }
 
 let posts = Lwt_unix.run (Blog.to_html config Mirage_blog.entries)
- 
+
 let nav_links = [
     "Blog", Uri.of_string "/blog";
     "Docs", Uri.of_string "/docs";
     "API", Uri.of_string "/api";
     "Community", Uri.of_string "/community";
     "About", Uri.of_string "/about";
-  ] 
+  ]
 
 let top_nav =
-  Foundation.top_nav 
+  Foundation.top_nav
     ~title:<:html<"Mirage OS">>
-    ~title_uri:(Uri.of_string "/") 
+    ~title_uri:(Uri.of_string "/")
     ~nav_links:(Foundation.Link.top_nav ~align:`Left nav_links)
 
 let t =

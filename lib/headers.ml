@@ -1,5 +1,4 @@
 (*
- * Copyright (c) 2010-2013 Anil Madhavapeddy <anil@recoil.org>
  * Copyright (c) 2013 Richard Mortier <mort@cantab.net>
  *
  * Permission to use, copy, modify, and distribute this software for any
@@ -16,32 +15,16 @@
  *
  *)
 
-module Entry : sig
-  type t = {
-    updated : Date.date;
-    author : Cow.Atom.author;
-    subject : string;
-    permalink : string;
-    body : string;
-  }
-  val permalink : Atom_feed.t -> t -> string
-  val compare : t -> t -> int
-  val to_html : feed:Atom_feed.t -> entry:t -> Cow.Html.t Lwt.t
-  val to_atom : Atom_feed.t -> t -> Cow.Atom.entry Lwt.t
-end
+(** Some default HTTP response types as HTTP headers; taken from
+    http://www.iana.org/assignments/media-types/ *)
 
-val to_html :
-  ?sep:Cow.Xml.t ->
-  feed:Atom_feed.t ->
-  entries:Entry.t list ->
-  Cow.Xml.t Lwt.t
+let html = ["content-type", "text/html; charset=UTF-8"]
+let xhtml = ["content-type", "application/xhtml+xml; charset=UTF-8"]
+let css = ["content-type", "text/css; charset=UTF-8"]
 
-val to_atom :
-  feed:Atom_feed.t ->
-  entries:Entry.t list ->
-  Cow.Atom.feed Lwt.t
+let atom = ["content-type", "application/atom+xml; charset=UTF-8"]
+let javascript = ["content-type", "application/javascript; charset=UTF-8"]
+let json = ["content-type", "application/json; charset=UTF-8"]
 
-val recent_posts :
-  ?active:string ->
-  Atom_feed.t ->
-  Entry.t list -> Foundation.Sidebar.t list
+let png = ["content-type", "image/png"]
+let jpeg = ["content-type", "image/jpeg"]

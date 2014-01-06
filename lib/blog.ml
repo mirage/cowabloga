@@ -36,10 +36,9 @@ module Entry = struct
     body: string;
   }
 
-  (** [permalink feed entry] returns the permalink URI for [entry] in [feed]. 
-      Until we have URL routing, this assumes /blog as the URI root *)
+  (** [permalink feed entry] returns the permalink URI for [entry] in [feed]. *)
   let permalink feed entry =
-    sprintf "%sblog/%s" feed.base_uri entry.permalink
+    sprintf "%s%s%s" feed.base_uri feed.id entry.permalink
 
   (** Compare two entries. *)
   let compare a b =
@@ -49,7 +48,9 @@ module Entry = struct
       Html.t fragment. *)
   let to_html ~feed ~entry =
     lwt content = feed.read_entry entry.body in
-    let permalink_disqus = sprintf "/%s#disqus_thread" entry.permalink in
+    let permalink_disqus =
+      sprintf "%s%s#disqus_thread" feed.id entry.permalink
+    in
     let author =
       let author_uri = match entry.author.Atom.uri with
         | None -> Uri.of_string "" (* TODO *)
@@ -110,11 +111,14 @@ let to_html ?(sep=default_separator) ~feed ~entries =
     sequence of [entries]. *)
 let to_atom ~feed ~entries =
   let { title; subtitle; base_uri; id; rights } = feed in
+  let id = base_uri ^ id in
+  let mk_uri x = Uri.of_string (id ^ x) in
+
   let entries = List.sort Entry.compare entries in
   let updated = Date.atom_date (List.hd entries).Entry.updated in
   let links = [
-    Atom.mk_link (Uri.of_string (base_uri ^ id ^ "/atom.xml"));
-    Atom.mk_link ~rel:`alternate ~typ:"text/html" (Uri.of_string base_uri)
+    Atom.mk_link (mk_uri "atom.xml");
+    Atom.mk_link ~rel:`alternate ~typ:"text/html" (mk_uri "")
   ] in
   let atom_feed = { Atom.id; title; subtitle;
     author=feed.author; rights; updated; links }
@@ -132,4 +136,3 @@ let recent_posts ?(active="") feed entries =
       else
         `link link
     ) entries
-
