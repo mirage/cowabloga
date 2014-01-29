@@ -37,10 +37,10 @@ let t =
   let sidebar = Foundation.Sidebar.t ~title:"Recent Posts" ~content:recent_posts in
   let copyright = <:html<Anil Madhavapeddy>> in
   let { Atom_feed.title; subtitle } = config in
-  Blog_template.t ~title ~subtitle ~sidebar ~posts ~copyright ()
+  Foundation.Blog.t ~title ~subtitle ~sidebar ~posts ~copyright ()
 
 let index =
-  let content = Index_template.t ~top_nav in
+  let content = Foundation.Index.t ~top_nav in
   let body = Foundation.body ~title:"Mirage OS" ~headers:[] ~content ~trailers:[] () in
   Foundation.page ~body
 

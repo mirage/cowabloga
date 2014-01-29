@@ -62,13 +62,76 @@ module Sidebar = struct
       |`text t -> <:html<<li>$str:t$</li>&>>
     in
     let rec make = function
-      |[] -> Cow.Html.nil
-      |hd::tl -> <:html<$to_html hd$$make tl$>> in
+      | [] -> Cow.Html.nil
+      | hd::tl -> <:html<$to_html hd$$make tl$>>
+    in
     <:html<<h5>$str:title$</h5>
-    <ul class="side-nav">
-    $make content$
-    </ul>
-     >>
+      <ul class="side-nav">
+        $make content$
+      </ul>
+   >>
+end
+
+module Index = struct
+  let t ~top_nav =
+    let content = <:html<
+      $top_nav$
+      <br />
+      <div class="row">
+        <div class="large-12 columns">
+          <img src="http://placehold.it/1000x400&amp;text=img"></img>
+          <hr />
+        </div>
+      </div>
+    >>
+    in
+    content
+end
+
+module Blog = struct
+  let post ~title ~author ~date ~content =
+    let open Link in
+    let title_text, title_uri = title in
+    <:html<
+      <article>
+        $date$
+        <h4><a href=$uri:title_uri$>$str:title_text$</a></h4>
+        <p><i>By $link author$</i></p>
+        $content$
+      </article>
+    >>
+
+  let t ~title ~subtitle ~sidebar ~posts ~copyright () =
+    let subtitle =
+      match subtitle with
+      | None -> <:html<&>>
+      | Some s -> <:html<<small>$str:s$</small>&>>
+    in
+    <:html<
+    <div class="row">
+      <div class="large-9 columns">
+        <h2>$str:title$ $subtitle$</h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="small-12 large-9 columns" role="content">
+        $posts$
+      </div>
+      <aside class="small-6 large-3 columns panel">
+        $sidebar$
+      </aside>
+    </div>
+    <footer class="row">
+      <div class="large-12 columns">
+        <hr />
+        <div class="row">
+          <div class="large-6 columns">
+            <p><small>&copy; Copyright $copyright$</small></p>
+          </div>
+        </div>
+      </div>
+    </footer>
+    >>
 end
 
 let body ?google_analytics ?highlight
