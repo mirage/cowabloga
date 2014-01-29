@@ -72,7 +72,7 @@ module Sidebar = struct
 end
 
 let body ?google_analytics ?highlight
-      ~title ~headers ~content () =
+      ~title ~headers ~content ~trailers () =
   (* Cannot be inlined below as the $ is interpreted as an antiquotation *)
   let js_init = [`Data "$(document).foundation();"] in
   let highlight_css, highlight_trailer = match highlight with
@@ -122,6 +122,7 @@ let body ?google_analytics ?highlight
       <script src="/js/foundation/foundation.topbar.js"> </script>
       <script> $js_init$ </script>
       $highlight_trailer$
+      $trailers$
     </body>
   >>
 
