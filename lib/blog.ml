@@ -63,7 +63,7 @@ module Entry = struct
       let permalink = Uri.of_string (permalink feed entry) in
       entry.subject, permalink
     in
-    return (Blog_template.post ~title ~date ~author ~content)
+    return (Foundation.Blog.post ~title ~date ~author ~content)
 
   (** [to_atom feed entry] *)
   let to_atom feed entry =

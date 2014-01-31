@@ -25,6 +25,7 @@ let css = ["content-type", "text/css; charset=UTF-8"]
 let atom = ["content-type", "application/atom+xml; charset=UTF-8"]
 let javascript = ["content-type", "application/javascript; charset=UTF-8"]
 let json = ["content-type", "application/json; charset=UTF-8"]
+let pdf = ["content-type", "application/pdf"]
 
 let png = ["content-type", "image/png"]
 let jpeg = ["content-type", "image/jpeg"]
