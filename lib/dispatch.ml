@@ -57,8 +57,9 @@ let f io dispatchf = (fun uri ->
     let path = Uri.path uri in
     let segments = split_path path in
     match_lwt (dispatchf segments) with
-    | `Page page -> Log.ok io.log path; io.ok ~headers:Headers.html page
+    | `Html page -> Log.ok io.log path; io.ok ~headers:Headers.html page
     | `Atom feed -> Log.ok io.log path; io.ok ~headers:Headers.atom feed
+    | `Page (hs, body) -> Log.ok io.log path; io.ok ~headers:hs body
     | `Asset asset
       -> Log.ok io.log path; io.ok ~headers:(headers path) asset
     | `Redirect path
