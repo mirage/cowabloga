@@ -1,4 +1,4 @@
-0.0.3 (trunk):
+0.0.3 (2013-02-01):
 * Add a `Link` module for keeping track of external articles.
 * Fix blog template columns to work better on small devices.
 * Add a `Feed` module that aggregates together all the other feeds (Blog/Wiki).
