@@ -1,3 +1,8 @@
+0.0.4 (trunk):
+* Refactor Foundation module for more modularity.
+* Add a `Page` module.
+* Add PDF type to `Headers`.
+
 0.0.3 (2013-02-01):
 * Add a `Link` module for keeping track of external articles.
 * Fix blog template columns to work better on small devices.

@@ -38,7 +38,22 @@ module Sidebar : sig
   val t : title:string -> content:t list -> Cow.Xml.t
 end
 
-val body: ?google_analytics:(string * string) -> ?highlight:string -> title:string -> headers:Cow.Html.t -> content:Cow.Html.t -> unit -> Cow.Html.t
+module Index : sig
+  val t: top_nav:Cow.Html.t -> Cow.Html.t
+end
+
+module Blog : sig
+  val post: title:string * Uri.t -> author:string * Uri.t -> date:Cow.Html.t -> content:Cow.Html.t -> Cow.Html.t
+
+  val t: title:string -> subtitle:string option -> sidebar:Cow.Html.t -> posts:Cow.Html.t -> copyright:Cow.Html.t -> unit -> Cow.Html.t
+
+end
+
+val body:
+  ?google_analytics:(string * string) -> ?highlight:string
+  -> title:string
+  -> headers:Cow.Html.t -> content:Cow.Html.t -> trailers:Cow.Html.t
+  -> unit -> Cow.Html.t
 
 val top_nav : title:Cow.Html.t -> title_uri:Uri.t -> nav_links:Cow.Html.t -> Cow.Html.t
 

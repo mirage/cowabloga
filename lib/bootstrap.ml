@@ -78,6 +78,6 @@ let body ?google_analytics ~title ~headers content =
 let page ?(ns="") body =
   Printf.sprintf "\
 <!DOCTYPE html>
-  <html $str:ns$>
+  <html '%s'>
   %s
-</html>" (Cow.Html.to_string body)
+</html>" ns (Cow.Html.to_string body)
