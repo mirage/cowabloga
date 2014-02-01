@@ -35,17 +35,10 @@ let split_path path =
     | [] | [""] -> []
     | hd::tl -> hd :: aux tl
   in
-  path
-  |> Re_str.(split_delim (regexp_string "/"))
-  |> aux
-  |> List.filter (fun e -> e <> "")
+  List.filter (fun e -> e <> "") (aux (Re_str.(split_delim (regexp_string "/") path)))
 
 let headers path =
-  let tail = path
-             |> Re_str.(split_delim (regexp_string "."))
-             |> List.rev
-             |> List.hd
-  in
+  let tail = List.hd (List.rev (Re_str.(split_delim (regexp_string ".")) path)) in
   if tail = "js"  then Headers.javascript else
   if tail = "css" then Headers.css else
   if tail = "json"then Headers.json else
