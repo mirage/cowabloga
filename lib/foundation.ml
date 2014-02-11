@@ -117,7 +117,7 @@ module Blog = struct
       <div class="small-12 large-9 columns" role="content">
         $posts$
       </div>
-      <aside class="small-6 large-3 columns panel">
+      <aside class="small-12 large-3 columns panel">
         $sidebar$
       </aside>
     </div>
