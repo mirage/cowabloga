@@ -21,4 +21,4 @@ Executable cowabloga_test
   Custom:             true
   CompiledObject:     best
   Install:            false
-  BuildDepends:       cohttp.lwt (>= 0.9.13), cowabloga, cow.syntax
+  BuildDepends:       cohttp.lwt (>= 0.10.0), cowabloga, cow.syntax
