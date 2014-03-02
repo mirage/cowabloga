@@ -22,7 +22,7 @@ open Cohttp
 open Cohttp_lwt_unix
 
 let make_server () =
-  let callback conn_id ?body req =
+  let callback conn_id req body =
     match Uri.path (Request.uri req) with
     |""|"/" -> Server.respond_string ~status:`OK ~body:Site.index ()
     |"/blog" -> Server.respond_string ~status:`OK ~body:Site.blog ()

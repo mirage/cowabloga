@@ -15,18 +15,10 @@ Library cowabloga
     Foundation, Bootstrap
   BuildDepends: cow, cow.syntax, lwt, lwt.syntax, omd, cstruct
 
-Executable atom_fetch
-  Path:               lib_test
-  MainIs:             atom_fetch.ml
-  Custom:             true
-  CompiledObject:     best
-  Install:            false
-  BuildDepends:       cohttp.lwt, cowabloga, cow.syntax
-
 Executable cowabloga_test
   Path: lib_test
   MainIs: serve.ml
   Custom:             true
   CompiledObject:     best
   Install:            false
-  BuildDepends:       cohttp.lwt (>= 0.9.13), cowabloga, cow.syntax
+  BuildDepends:       cohttp.lwt (>= 0.10.0), cowabloga, cow.syntax
