@@ -1,4 +1,7 @@
-0.0.4 (trunk):
+0.0.5 (2013-03-02):
+* Compatibility with Cohttp 0.10.x
+
+0.0.4 (2013-02-02):
 * Refactor Foundation module for more modularity.
 * Add a `Page` module.
 * Add PDF type to `Headers`.
