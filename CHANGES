@@ -1,12 +1,15 @@
-0.0.5 (2013-03-02):
+0.0.6 (2014-03-26):
+* Explicitly depend on `Re_str` instead of a silent dependency on Cohttp.
+
+0.0.5 (2014-03-02):
 * Compatibility with Cohttp 0.10.x
 
-0.0.4 (2013-02-02):
+0.0.4 (2014-02-02):
 * Refactor Foundation module for more modularity.
 * Add a `Page` module.
 * Add PDF type to `Headers`.
 
-0.0.3 (2013-02-01):
+0.0.3 (2014-02-01):
 * Add a `Link` module for keeping track of external articles.
 * Fix blog template columns to work better on small devices.
 * Add a `Feed` module that aggregates together all the other feeds (Blog/Wiki).

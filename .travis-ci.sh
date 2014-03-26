@@ -1,7 +1,7 @@
 ## declare required packages
 
 ## ssl needed below to get the Lwt_unix version of cohttp
-OPAM_PACKAGES="cow ssl lwt cohttp"
+OPAM_PACKAGES="cow ssl lwt cohttp cstruct"
 
 ## different PPAs required to cover the test matrix
 
