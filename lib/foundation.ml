@@ -88,15 +88,26 @@ module Index = struct
     content
 end
 
+let rec intercalate x = function
+  | []    -> []
+  | [e]   -> [e]
+  | e::es -> e :: x :: intercalate x es
+
 module Blog = struct
-  let post ~title ~author ~date ~content =
+  let post ~title ~authors ~date ~content =
     let open Link in
+    let author = match authors with
+      | [] -> <:html< >>
+      | _  ->
+          let a_nodes = intercalate <:html<, >> (List.map link authors) in
+          <:html<By $list: a_nodes$>>
+    in
     let title_text, title_uri = title in
     <:html<
       <article>
         $date$
         <h4><a href=$uri:title_uri$>$str:title_text$</a></h4>
-        <p><i>By $link author$</i></p>
+        <p><i>$author$</i></p>
         $content$
       </article>
     >>

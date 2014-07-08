@@ -43,7 +43,7 @@ module Index : sig
 end
 
 module Blog : sig
-  val post: title:string * Uri.t -> author:string * Uri.t -> date:Cow.Html.t -> content:Cow.Html.t -> Cow.Html.t
+  val post: title:string * Uri.t -> authors:(string * Uri.t) list -> date:Cow.Html.t -> content:Cow.Html.t -> Cow.Html.t
 
   val t: title:string -> subtitle:string option -> sidebar:Cow.Html.t -> posts:Cow.Html.t -> copyright:Cow.Html.t -> unit -> Cow.Html.t
 
