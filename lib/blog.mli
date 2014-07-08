@@ -19,7 +19,7 @@
 module Entry : sig
   type t = {
     updated : Date.date;
-    author : Cow.Atom.author;
+    authors : Cow.Atom.author list;
     subject : string;
     permalink : string;
     body : string;

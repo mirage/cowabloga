@@ -30,7 +30,7 @@ module Entry = struct
   (** An entry in a feed: metadata plus a filename [body]. *)
   type t = {
     updated: Date.date;
-    author: Atom.author;
+    authors: Atom.author list;
     subject: string;
     permalink: string;
     body: string;
@@ -51,19 +51,21 @@ module Entry = struct
     let permalink_disqus =
       sprintf "%s%s#disqus_thread" feed.id entry.permalink
     in
-    let author =
-      let author_uri = match entry.author.Atom.uri with
-        | None -> Uri.of_string "" (* TODO *)
-        | Some uri -> Uri.of_string uri
-      in
-      entry.author.Atom.name, author_uri
+    let authors =
+      List.map (fun { Atom.name ; uri } ->
+        let author_uri = match uri with
+          | None -> Uri.of_string "" (* TODO *)
+          | Some uri -> Uri.of_string uri
+        in
+        name, author_uri)
+      entry.authors
     in
     let date = Date.html_of_date entry.updated in
     let title =
       let permalink = Uri.of_string (permalink feed entry) in
       entry.subject, permalink
     in
-    return (Foundation.Blog.post ~title ~date ~author ~content)
+    return (Foundation.Blog.post ~title ~date ~authors ~content)
 
   (** [to_atom feed entry] *)
   let to_atom feed entry =
@@ -75,7 +77,9 @@ module Entry = struct
       Atom.id = permalink feed entry;
       title = entry.subject;
       subtitle = None;
-      author = Some entry.author;
+      author =
+        ( match entry.authors with
+          | [] -> None | author::_ -> Some author );
       updated = Date.atom_date entry.updated;
       rights = None;
       links;
