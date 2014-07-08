@@ -89,7 +89,8 @@ module Index = struct
 end
 
 module Blog = struct
-  let post ~title ~author ~date ~content =
+  let post ~title ~authors ~date ~content =
+    let author = List.hd authors in
     let open Link in
     let title_text, title_uri = title in
     <:html<
