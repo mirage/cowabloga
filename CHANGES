@@ -1,3 +1,6 @@
+0.0.8 (trunk):
+* Support Conduit 0.6 APIs.
+
 0.0.7 (2014-07-12):
 * Add support for multi-author blog posts (#19 via @pqwy).
 
