@@ -1,8 +1,9 @@
 # OASIS_START
-# DO NOT EDIT (digest: d285a932148c93fa73d16646dfbcf8f2)
+# DO NOT EDIT (digest: 16e068c3d83d7abbf27836c29135a678)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
+true: annot, bin_annot
 <**/.svn>: -traverse
 <**/.svn>: not_hygienic
 ".bzr": -traverse
@@ -25,13 +26,13 @@
 "lib/dispatch.cmx": for-pack(Cowabloga)
 "lib/foundation.cmx": for-pack(Cowabloga)
 "lib/bootstrap.cmx": for-pack(Cowabloga)
-<lib/*.ml{,i}>: pkg_cow
-<lib/*.ml{,i}>: pkg_cow.syntax
-<lib/*.ml{,i}>: pkg_cstruct
-<lib/*.ml{,i}>: pkg_lwt
-<lib/*.ml{,i}>: pkg_lwt.syntax
-<lib/*.ml{,i}>: pkg_omd
-<lib/*.ml{,i}>: pkg_re.str
+<lib/*.ml{,i,y}>: pkg_cow
+<lib/*.ml{,i,y}>: pkg_cow.syntax
+<lib/*.ml{,i,y}>: pkg_cstruct
+<lib/*.ml{,i,y}>: pkg_lwt
+<lib/*.ml{,i,y}>: pkg_lwt.syntax
+<lib/*.ml{,i,y}>: pkg_omd
+<lib/*.ml{,i,y}>: pkg_re.str
 # Executable cowabloga_test
 <lib_test/serve.{native,byte}>: pkg_cohttp.lwt
 <lib_test/serve.{native,byte}>: pkg_cow
@@ -42,15 +43,15 @@
 <lib_test/serve.{native,byte}>: pkg_omd
 <lib_test/serve.{native,byte}>: pkg_re.str
 <lib_test/serve.{native,byte}>: use_cowabloga
-<lib_test/*.ml{,i}>: pkg_cohttp.lwt
-<lib_test/*.ml{,i}>: pkg_cow
-<lib_test/*.ml{,i}>: pkg_cow.syntax
-<lib_test/*.ml{,i}>: pkg_cstruct
-<lib_test/*.ml{,i}>: pkg_lwt
-<lib_test/*.ml{,i}>: pkg_lwt.syntax
-<lib_test/*.ml{,i}>: pkg_omd
-<lib_test/*.ml{,i}>: pkg_re.str
-<lib_test/*.ml{,i}>: use_cowabloga
+<lib_test/*.ml{,i,y}>: pkg_cohttp.lwt
+<lib_test/*.ml{,i,y}>: pkg_cow
+<lib_test/*.ml{,i,y}>: pkg_cow.syntax
+<lib_test/*.ml{,i,y}>: pkg_cstruct
+<lib_test/*.ml{,i,y}>: pkg_lwt
+<lib_test/*.ml{,i,y}>: pkg_lwt.syntax
+<lib_test/*.ml{,i,y}>: pkg_omd
+<lib_test/*.ml{,i,y}>: pkg_re.str
+<lib_test/*.ml{,i,y}>: use_cowabloga
 <lib_test/serve.{native,byte}>: custom
 # OASIS_STOP
 true: annot, bin_annot, principal, strict_sequence, debug
