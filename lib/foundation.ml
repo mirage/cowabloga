@@ -26,7 +26,7 @@ module Link = struct
     <:html<<ul class=$str:cl$>$list:items$</ul>&>>
 
   let top_nav ?(align=`Right) (links:links) =
-    let links = List.map link links in
+    let links = List.map (link ~cl:"") links in
     let cl = match align with `Right -> "right" | `Left -> "left" in
     mk_ul_links ~cl ~links
 
@@ -35,11 +35,11 @@ module Link = struct
     mk_ul_links ~cl:"button-group" ~links
 
   let side_nav (links:links) =
-    let links = List.map link links in
+    let links = List.map (link ~cl:"") links in
     mk_ul_links ~cl:"side-nav" ~links
 
   let bottom_nav (links:links) =
-    let links = List.map link links in
+    let links = List.map (link ~cl:"") links in
     mk_ul_links ~cl:"inline-list right" ~links
 end
 
@@ -99,8 +99,10 @@ module Blog = struct
     let author = match authors with
       | [] -> <:html< >>
       | _  ->
-          let a_nodes = intercalate <:html<, >> (List.map link authors) in
-          <:html<By $list: a_nodes$>>
+        let a_nodes =
+          intercalate <:html<, >> (List.map (link ~cl:"") authors)
+        in
+        <:html<By $list: a_nodes$>>
     in
     let title_text, title_uri = title in
     <:html<

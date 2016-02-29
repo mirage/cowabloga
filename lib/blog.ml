@@ -19,7 +19,7 @@
 (** Blog management: entries, ATOM feeds, etc. *)
 
 open Printf
-open Lwt
+open Lwt.Infix
 open Cow
 open Atom_feed
 
@@ -47,12 +47,9 @@ module Entry = struct
   (** [to_html feed entry] converts a blog entry in the given feed into an
       Html.t fragment. *)
   let to_html ~feed ~entry =
-    lwt content = feed.read_entry entry.body in
-    let permalink_disqus =
-      sprintf "%s%s#disqus_thread" feed.id entry.permalink
-    in
+    feed.read_entry entry.body >|= fun content ->
     let authors =
-      List.map (fun { Atom.name ; uri } ->
+      List.map (fun { Atom.name ; uri; _ } ->
         let author_uri = match uri with
           | None -> Uri.of_string "" (* TODO *)
           | Some uri -> Uri.of_string uri
@@ -65,7 +62,7 @@ module Entry = struct
       let permalink = Uri.of_string (permalink feed entry) in
       entry.subject, permalink
     in
-    return (Foundation.Blog.post ~title ~date ~authors ~content)
+    Foundation.Blog.post ~title ~date ~authors ~content
 
   (** [to_atom feed entry] *)
   let to_atom feed entry =
@@ -102,11 +99,11 @@ let default_separator = <:html< <hr /> >>
     by [sep], defaulting to [default_separator]. *)
 let to_html ?(sep=default_separator) ~feed ~entries =
   let rec concat = function
-    | [] -> return <:html<&>>
+    | [] -> Lwt.return <:html<&>>
     | hd::tl ->
-      lwt hd = Entry.to_html feed hd in
-      concat tl
-      >|= fun tl -> <:html< $hd$$sep$$tl$ >>
+      Entry.to_html ~feed ~entry:hd >>= fun hd ->
+      concat tl >|= fun tl ->
+      <:html< $hd$$sep$$tl$ >>
   in
   concat (List.sort Entry.compare entries)
 
@@ -114,7 +111,7 @@ let to_html ?(sep=default_separator) ~feed ~entries =
 (** [to_atom feed entries] generates a time-ordered ATOM RSS [feed] for a
     sequence of [entries]. *)
 let to_atom ~feed ~entries =
-  let { title; subtitle; base_uri; id; rights } = feed in
+  let { title; subtitle; base_uri; id; rights; _ } = feed in
   let id = base_uri ^ id in
   let mk_uri x = Uri.of_string (id ^ x) in
 
@@ -127,8 +124,8 @@ let to_atom ~feed ~entries =
   let atom_feed = { Atom.id; title; subtitle;
     author=feed.author; rights; updated; links }
   in
-  lwt entries = Lwt_list.map_s (Entry.to_atom feed) entries in
-  return { Atom.feed=atom_feed; entries }
+  Lwt_list.map_s (Entry.to_atom feed) entries >|= fun entries ->
+  { Atom.feed=atom_feed; entries }
 
 (** [recent_posts feed entries] . *)
 let recent_posts ?(active="") feed entries =

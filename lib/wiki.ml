@@ -19,7 +19,7 @@
 (** Wiki management: entries, ATOM feeds, etc. *)
 
 open Printf
-open Lwt
+open Lwt.Infix
 open Cow
 open Atom_feed
 open Date
@@ -49,29 +49,30 @@ let atom_date d =
 let short_html_of_date d =
   <:xml<$int:d.day$ $xml_of_month d.month$ $int:d.year$>>
 
-let body_of_entry {read_entry} e =
+let body_of_entry {read_entry; _} e =
   match e.body with
   | File x -> read_entry x
-  | Html x -> return x
+  | Html x -> Lwt.return x
 
 let compare_dates e1 e2 =
   let d1 = e1.updated in let d2 = e2.updated in
   compare (d1.year,d1.month,d1.day) (d2.year,d2.month,d2.day)
 
 (* Convert a wiki record into an Html.t fragment *)
-let html_of_entry ?(want_date=false) read_file e =
-  lwt body = body_of_entry read_file e in
-  return <:xml<
+let html_of_entry read_file e =
+  body_of_entry read_file e >|= fun body ->
+  <:xml<
     <h3><a href=$str:e.permalink$>$str:e.subject$</a></h3>
-    $body$ >>
+    $body$
+  >>
 
 let html_of_index feed =
-  lwt body = feed.read_entry "index.md" in
-  return <:xml<
+  feed.read_entry "index.md" >|= fun body ->
+  <:xml<
     <div class="wiki_entry">
-     <div class="wiki_entry_body">$body$</div>
-   </div>
- >>
+      <div class="wiki_entry_body">$body$</div>
+    </div>
+   >>
 
 let permalink feed e =
   sprintf "%s%s%s" feed.base_uri feed.id e.permalink
@@ -91,28 +92,8 @@ let html_of_recent_updates feed (entries:entry list) =
   >>
 
 (* Main wiki page; disqus comments are for full entry pages *)
-let html_of_page ?disqus ~content ~sidebar =
-
-  (* The disqus comment *)
-  let disqus_html permalink = <:xml<
-    <div class="wiki_entry_comments">
-    <div id="disqus_thread"/>
-    <script type="text/javascript">
-      var disqus_identifer = '$str:permalink$';
-      (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-         dsq.src = 'http://openmirage.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-       })()
-    </script>
-    </div>
-  >> in
-
-  let dh = match disqus with
-     | Some perm  -> disqus_html perm
-     | None      -> <:xml< >> in
-
-  lwt content = content in
+let html_of_page ~content ~sidebar =
+  content >|= fun content ->
   let sidebar =
     match sidebar with
     | [] -> []
@@ -122,7 +103,7 @@ let html_of_page ?disqus ~content ~sidebar =
            $sidebar$
          </aside>
        >> in
-  return <:xml<
+  <:xml<
     <div class="row">
       <div class="small-12 medium-10 large-9 columns">
       <h2>Documentation <small> and guides</small></h2>
@@ -143,7 +124,7 @@ let permalink_exists x entries =
 let atom_entry_of_ent (feed:Atom_feed.t) e =
   let perma_uri = Uri.of_string (permalink feed e) in
   let links = [ Atom.mk_link ~rel:`alternate ~typ:"text/html" perma_uri ] in
-  lwt content = body_of_entry feed e in
+  body_of_entry feed e >|= fun content ->
   let meta = {
     Atom.id      = Uri.to_string perma_uri;
     title        = e.subject;
@@ -153,7 +134,7 @@ let atom_entry_of_ent (feed:Atom_feed.t) e =
     rights =       feed.rights;
     links;
   } in
-  return {
+  {
     Atom.entry = meta;
     summary    = None;
     base       = None;
@@ -161,7 +142,7 @@ let atom_entry_of_ent (feed:Atom_feed.t) e =
   }
 
 let to_atom ~feed ~entries =
-  let { title; subtitle; base_uri; id; rights } = feed in
+  let { title; subtitle; base_uri; id; rights; _ } = feed in
   let id = base_uri ^ id in
   let mk_uri x = Uri.of_string (id ^ x) in
 
@@ -171,7 +152,7 @@ let to_atom ~feed ~entries =
     Atom.mk_link (mk_uri "atom.xml");
     Atom.mk_link ~rel:`alternate ~typ:"text/html" (mk_uri "")
   ] in
-  lwt entries = Lwt_list.map_s (atom_entry_of_ent feed) es in
+  Lwt_list.map_s (atom_entry_of_ent feed) es >|= fun entries ->
   let feed = {
     Atom.id;
     title;
@@ -181,4 +162,4 @@ let to_atom ~feed ~entries =
     updated;
     links
   } in
-  return { Atom.feed=feed; entries }
+  { Atom.feed=feed; entries }
