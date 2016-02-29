@@ -37,26 +37,18 @@ let split_path path =
   in
   List.filter (fun e -> e <> "") (aux (Re_str.(split_delim (regexp_string "/") path)))
 
-let headers path =
-  let tail = List.hd (List.rev (Re_str.(split_delim (regexp_string ".")) path)) in
-  if tail = "js"  then Headers.javascript else
-  if tail = "css" then Headers.css else
-  if tail = "json"then Headers.json else
-  if tail = "png" then Headers.png else
-  if tail = "pdf" then Headers.pdf else
-    []
+let headers path = ["content-type", Magic_mime.lookup path]
 
-let f io dispatchf = (fun uri ->
-    let path = Uri.path uri in
-    let segments = split_path path in
-    match_lwt (dispatchf segments) with
-    | `Html page -> Log.ok io.log path; io.ok ~headers:Headers.html page
-    | `Atom feed -> Log.ok io.log path; io.ok ~headers:Headers.atom feed
-    | `Page (hs, body) -> Log.ok io.log path; io.ok ~headers:hs body
-    | `Asset asset
-      -> Log.ok io.log path; io.ok ~headers:(headers path) asset
-    | `Redirect path
-      -> Log.redirect io.log path; io.redirect ~uri:(Uri.of_string path)
-    | `Not_found path
-      -> Log.notfound io.log path; io.notfound ~uri:(Uri.of_string path)
-  )
+let f io dispatchf uri =
+  let path = Uri.path uri in
+  let segments = split_path path in
+  dispatchf segments >>= function
+  | `Html page -> Log.ok io.log path; io.ok ~headers:Headers.html page
+  | `Atom feed -> Log.ok io.log path; io.ok ~headers:Headers.atom feed
+  | `Page (hs, body) -> Log.ok io.log path; io.ok ~headers:hs body
+  | `Asset asset
+    -> Log.ok io.log path; io.ok ~headers:(headers path) asset
+  | `Redirect path
+    -> Log.redirect io.log path; io.redirect ~uri:(Uri.of_string path)
+  | `Not_found path
+    -> Log.notfound io.log path; io.notfound ~uri:(Uri.of_string path)
