@@ -16,7 +16,7 @@
  *)
 
 (** Generate an aggregated link feed from all the other feeds *)
-open Lwt
+open Lwt.Infix
 open Cow
 
 type feed = [
@@ -55,8 +55,8 @@ let to_atom_entries (feeds:feed list) =
 
 let to_html ?limit feeds =
   let open Atom in
-  to_atom_entries feeds
-  >|= List.mapi (fun i ({entry}, info) ->
+  to_atom_entries feeds >|=
+  List.mapi (fun i ({entry; _}, info) ->
     let fa = Printf.sprintf "fa-li fa %s" (feed_icon info) in
     (* Find an alternate HTML link *)
     try
@@ -78,9 +78,9 @@ let to_html ?limit feeds =
 let permalink feed id = Printf.sprintf "%supdates/%s" feed.Atom_feed.base_uri id
 let to_atom ~meta ~feeds =
     let open Atom_feed in
-    let { title; subtitle; base_uri; id; rights } = meta in
+    let { title; subtitle; base_uri; id; rights; _ } = meta in
     let id = base_uri ^ id in
-    lwt entries = to_atom_entries feeds >|= List.map fst in
+    to_atom_entries feeds >|= List.map fst >|= fun entries ->
     let updated = (List.hd entries).Atom.entry.Atom.updated in
     let links = [
       Atom.mk_link (Uri.of_string (permalink meta "atom.xml"));
@@ -89,4 +89,4 @@ let to_atom ~meta ~feeds =
     let atom_feed = { Atom.id; title; subtitle; author=meta.author;
       rights; updated; links }
     in
-    return { Atom.feed=atom_feed; entries }
+    { Atom.feed=atom_feed; entries }

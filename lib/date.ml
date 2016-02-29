@@ -15,10 +15,6 @@
  *
  *)
 
-open Cow
-open Printf
-open Lwt
-
 type month = int
 
 let short_string_of_month m =
@@ -54,10 +50,7 @@ type date = {
   year  : int;
   hour  : int;
   min   : int;
-} with xml
-
-let html_of_date d =
-  <:xml<$int:d.day$ $str:long_string_of_month d.month$ $int:d.year$>>
+}
 
 let html_of_date d =
   <:xml<

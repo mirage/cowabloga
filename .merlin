@@ -1,8 +1,4 @@
+PKG cohttp lwt cow magic-mime
 S site
-B _build/site
+B _build/**
 S lib
-B _build/lib
-PKG findlib
-PKG cohttp
-PKG lwt
-PKG cow

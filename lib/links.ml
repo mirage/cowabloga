@@ -17,7 +17,7 @@
  *)
 
 open Printf
-open Lwt
+open Lwt.Infix
 open Cow
 open Atom_feed
 open Date
@@ -46,7 +46,9 @@ let atom_entry_of_link (feed:Atom_feed.t) l =
    (*  Atom.mk_link ~rel:`alternate ~typ:"text/html" perma_uri; *)
     Atom.mk_link ~rel:`alternate ~typ:"text/html" l.uri;
   ] in
-  let content = <:html<<a href=$uri:l.uri$>$str:l.title$</a>, from $str:l.stream.name$>> in
+  let content =
+    <:html<<a href=$uri:l.uri$>$str:l.title$</a>, from $str:l.stream.name$>>
+  in
   let meta = {
     Atom.id      = Uri.to_string perma_uri;
     title        = l.title;
@@ -56,7 +58,7 @@ let atom_entry_of_link (feed:Atom_feed.t) l =
     rights       = feed.rights;
     links;
   } in
-  return { Atom.entry = meta; summary= None; base= None; content }
+  Lwt.return { Atom.entry = meta; summary= None; base= None; content }
 
 let cmp_ent a b =
   Atom.compare (atom_date a.date) (atom_date b.date)
@@ -70,7 +72,7 @@ let to_atom ~feed ~entries =
     Atom.mk_link (mk_uri "atom.xml");
     Atom.mk_link ~rel:`alternate ~typ:"text/html" (mk_uri "")
   ] in
-  lwt entries = Lwt_list.map_s (atom_entry_of_link feed) es in
+  Lwt_list.map_s (atom_entry_of_link feed) es >|= fun entries ->
   let feed = {
     Atom.id;
     title = feed.Atom_feed.title;
@@ -80,4 +82,4 @@ let to_atom ~feed ~entries =
     updated;
     links
   } in
-  return { Atom.feed=feed; entries }
+  { Atom.feed=feed; entries }

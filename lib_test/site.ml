@@ -16,7 +16,10 @@ let config = {
   read_entry
 }
 
-let posts = Lwt_unix.run (Blog.to_html config Mirage_blog.entries)
+let posts =
+  Lwt_unix.run begin
+    Blog.to_html ?sep:None ~feed:config ~entries:Mirage_blog.entries
+  end
 
 let nav_links = [
     "Blog", Uri.of_string "/blog";
@@ -36,7 +39,7 @@ let t =
   let recent_posts = Blog.recent_posts config Mirage_blog.entries in
   let sidebar = Foundation.Sidebar.t ~title:"Recent Posts" ~content:recent_posts in
   let copyright = <:html<Anil Madhavapeddy>> in
-  let { Atom_feed.title; subtitle } = config in
+  let { Atom_feed.title; subtitle; _ } = config in
   Foundation.Blog.t ~title ~subtitle ~sidebar ~posts ~copyright ()
 
 let index =

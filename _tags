@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 16e068c3d83d7abbf27836c29135a678)
+# DO NOT EDIT (digest: 6a312d5ac6ee75ae0a0f4d8aa1aada79)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
@@ -30,7 +30,7 @@ true: annot, bin_annot
 <lib/*.ml{,i,y}>: pkg_cow.syntax
 <lib/*.ml{,i,y}>: pkg_cstruct
 <lib/*.ml{,i,y}>: pkg_lwt
-<lib/*.ml{,i,y}>: pkg_lwt.syntax
+<lib/*.ml{,i,y}>: pkg_magic-mime
 <lib/*.ml{,i,y}>: pkg_omd
 <lib/*.ml{,i,y}>: pkg_re.str
 # Executable cowabloga_test
@@ -39,7 +39,7 @@ true: annot, bin_annot
 <lib_test/serve.{native,byte}>: pkg_cow.syntax
 <lib_test/serve.{native,byte}>: pkg_cstruct
 <lib_test/serve.{native,byte}>: pkg_lwt
-<lib_test/serve.{native,byte}>: pkg_lwt.syntax
+<lib_test/serve.{native,byte}>: pkg_magic-mime
 <lib_test/serve.{native,byte}>: pkg_omd
 <lib_test/serve.{native,byte}>: pkg_re.str
 <lib_test/serve.{native,byte}>: use_cowabloga
@@ -48,11 +48,11 @@ true: annot, bin_annot
 <lib_test/*.ml{,i,y}>: pkg_cow.syntax
 <lib_test/*.ml{,i,y}>: pkg_cstruct
 <lib_test/*.ml{,i,y}>: pkg_lwt
-<lib_test/*.ml{,i,y}>: pkg_lwt.syntax
+<lib_test/*.ml{,i,y}>: pkg_magic-mime
 <lib_test/*.ml{,i,y}>: pkg_omd
 <lib_test/*.ml{,i,y}>: pkg_re.str
 <lib_test/*.ml{,i,y}>: use_cowabloga
 <lib_test/serve.{native,byte}>: custom
 # OASIS_STOP
 true: annot, bin_annot, principal, strict_sequence, debug
-true: syntax_camlp4o
+true: warn_error(+1..49), warn(A-4-41-44)
