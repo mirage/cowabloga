@@ -15,20 +15,19 @@
  *
  *)
 
-open Printf
-open Lwt
-
 open Cohttp
 open Cohttp_lwt_unix
 
 let make_server () =
-  let callback conn_id req body =
+  let callback _conn_id req _body =
     match Uri.path (Request.uri req) with
     |""|"/" -> Server.respond_string ~status:`OK ~body:Site.index ()
     |"/blog" -> Server.respond_string ~status:`OK ~body:Site.blog ()
     |_ ->
-       let fname = Server.resolve_file ~docroot:"lib_test" ~uri:(Request.uri req) in
-       Server.respond_file ~fname ()
+      let fname =
+        Server.resolve_file ~docroot:"lib_test" ~uri:(Request.uri req)
+      in
+      Server.respond_file ~fname ()
   in
   let conn_closed (_,conn_id)=
     Printf.eprintf "conn %s closed\n%!" (Connection.to_string conn_id);
