@@ -51,12 +51,12 @@ module Entry = struct
     feed.read_entry entry.body >|= fun content ->
     let authors =
       List.map (fun { Atom.name ; uri; _ } ->
-        let author_uri = match uri with
-          | None -> Uri.of_string "" (* TODO *)
-          | Some uri -> Uri.of_string uri
-        in
-        name, author_uri)
-      entry.authors
+          let author_uri = match uri with
+            | None -> Uri.of_string "" (* TODO *)
+            | Some uri -> Uri.of_string uri
+          in
+          name, author_uri)
+        entry.authors
     in
     let date = Date.html_of_date entry.updated in
     let title =
@@ -123,7 +123,7 @@ let to_atom ~feed ~entries =
     Atom.mk_link ~rel:`alternate ~typ:"text/html" (mk_uri "")
   ] in
   let atom_feed = { Atom.id; title; subtitle;
-    author=feed.author; rights; updated; links }
+                    author=feed.author; rights; updated; links }
   in
   Lwt_list.map_s (Entry.to_atom feed) entries >|= fun entries ->
   { Atom.feed=atom_feed; entries }

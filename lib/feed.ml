@@ -44,14 +44,14 @@ let to_atom_entries (feeds:feed list) =
   Lwt_list.map_s (
     function
     | `Blog (feed,entries) ->
-        Blog.to_atom ~feed ~entries
-        >|= fun c -> List.map (fun e -> (e, `Blog feed)) c.entries
+      Blog.to_atom ~feed ~entries
+      >|= fun c -> List.map (fun e -> (e, `Blog feed)) c.entries
     | `Wiki (feed,entries) ->
-        Wiki.to_atom ~feed ~entries
-        >|= fun c -> List.map (fun e -> (e, `Wiki feed)) c.entries
+      Wiki.to_atom ~feed ~entries
+      >|= fun c -> List.map (fun e -> (e, `Wiki feed)) c.entries
     | `Links (feed,entries) ->
-        Links.to_atom ~feed ~entries
-        >|= fun c -> List.map (fun e -> (e, `Links feed)) c.entries
+      Links.to_atom ~feed ~entries
+      >|= fun c -> List.map (fun e -> (e, `Links feed)) c.entries
   ) feeds
   >|= List.flatten
   >|= List.sort
@@ -77,10 +77,10 @@ let to_html ?limit feeds =
           Printf.sprintf "(%d %s %d)" d (Date.short_string_of_month m) y
         in
         list [
-            a ~href:(feed_uri info) (i ~cls:fa empty);
-            a ~href:uri (string entry.title);
-            i ~cls:"front_date" (string date)
-          ]
+          a ~href:(feed_uri info) (i ~cls:fa empty);
+          a ~href:uri (string entry.title);
+          i ~cls:"front_date" (string date)
+        ]
       with Not_found -> empty
     ) >|= fun fs ->
   ul ~cls:"fa-ul" fs

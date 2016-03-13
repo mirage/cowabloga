@@ -45,11 +45,11 @@ end
 
 module Sidebar = struct
   type t = [
-   | `link of Link.t
-   | `active_link of Link.t
-   | `divider
-   | `text of string
-   | `html of Cow.Xml.t
+    | `link of Link.t
+    | `active_link of Link.t
+    | `divider
+    | `text of string
+    | `html of Cow.Xml.t
   ]
 
   let t ~title ~content =
@@ -145,22 +145,22 @@ let body ?google_analytics ?highlight ~title:t ~headers ~content ~trailers () =
     | Some (a, d) ->
       script ~typ:"text/javascript" (
         string @@ Printf.sprintf
-        "//<![CDATA[\n\
-         var _gaq = _gaq || [];\n\
-         _gaq.push(['_setAccount', '%s']);\n\
-         _gaq.push(['_setDomainName', '%s']);\n\
-         _gaq.push(['_trackPageview']);\n\
-         \n\
-         (function() {\n\
-        \  var ga = document.createElement('script'); \
-        \    ga.type = 'text/javascript'; \
-        \    ga.async = true;\n\
-        \  ga.src = ('https:' == document.location.protocol\
-        \    ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';\n\
-        \  var s = document.getElementsByTagName('script')[0]; \
-        \    s.parentNode.insertBefore(ga, s);\n\
-         })();\n\
-         //]]>" a d)
+          "//<![CDATA[\n\
+           var _gaq = _gaq || [];\n\
+           _gaq.push(['_setAccount', '%s']);\n\
+           _gaq.push(['_setDomainName', '%s']);\n\
+           _gaq.push(['_trackPageview']);\n\
+           \n\
+           (function() {\n\
+          \  var ga = document.createElement('script'); \
+          \    ga.type = 'text/javascript'; \
+          \    ga.async = true;\n\
+          \  ga.src = ('https:' == document.location.protocol\
+          \    ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';\n\
+          \  var s = document.getElementsByTagName('script')[0]; \
+          \    s.parentNode.insertBefore(ga, s);\n\
+           })();\n\
+           //]]>" a d)
   in
   head (list [
       meta ~attrs:["charset","utf-8"] empty;

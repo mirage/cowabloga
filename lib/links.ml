@@ -43,7 +43,7 @@ let permalink feed l =
 let atom_entry_of_link (feed:Atom_feed.t) l =
   let perma_uri = Uri.of_string (permalink feed l) in
   let links = [
-   (*  Atom.mk_link ~rel:`alternate ~typ:"text/html" perma_uri; *)
+    (*  Atom.mk_link ~rel:`alternate ~typ:"text/html" perma_uri; *)
     Atom.mk_link ~rel:`alternate ~typ:"text/html" l.uri;
   ] in
   let content =
