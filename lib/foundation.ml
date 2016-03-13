@@ -53,18 +53,18 @@ module Sidebar = struct
 
   let t ~title ~content =
     let to_html = function
-      |`link l        -> tag "li" (Link.link l)
-      |`active_link l -> tag "li" ~cls:"active" (Link.link l)
-      |`divider       -> tag "li" ~cls:"divider" empty
-      |`html h        -> tag "li" h
-      |`text t        -> tag "li" (string t)
+      |`link l        -> li (Link.link l)
+      |`active_link l -> li ~cls:"active" (Link.link l)
+      |`divider       -> li ~cls:"divider" empty
+      |`html h        -> li h
+      |`text t        -> li (string t)
     in
     let rec make = function
-      | []     -> empty
-      | hd::tl -> to_html hd ++ make tl
+      | []     -> []
+      | hd::tl -> to_html hd :: make tl
     in
     h5 (string title)
-    ++ tag "ul" ~cls:"side-nav" (make content)
+    ++ ul ~add_li:false ~cls:"side-nav" (make content)
 end
 
 module Index = struct
@@ -185,11 +185,11 @@ let body ?google_analytics ?highlight ~title:t ~headers ~content ~trailers () =
 let top_nav ~title ~title_uri ~nav_links =
   div ~cls:"contain-to-grid fixed" (
     nav ~cls:"top-bar" ~attrs:["data-topbar",""] (
-      tag "ul" ~cls:"title-area" (list [
-        tag "li" ~cls:"name" (h1 (a ~href:title_uri title));
-        tag "li" ~cls:"toggle-topbar menu-icon"
+      ul ~add_li:false ~cls:"title-area" [
+        li ~cls:"name" (h1 (a ~href:title_uri title));
+        li ~cls:"toggle-topbar menu-icon"
           (a ~href:(Uri.of_string "#") (span (string "Menu")));
-        ])
+      ]
       ++ section ~cls:"top-bar-section" nav_links
     ))
 

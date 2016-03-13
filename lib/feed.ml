@@ -83,7 +83,7 @@ let to_html ?limit feeds =
           ]
       with Not_found -> empty
     ) >|= fun fs ->
-  tag "ul" ~cls:"fa-ul" (list fs)
+  ul ~cls:"fa-ul" fs
 
 let permalink feed id = Printf.sprintf "%supdates/%s" feed.Atom_feed.base_uri id
 
