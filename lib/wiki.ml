@@ -92,7 +92,7 @@ let html_of_page ~content ~sidebar =
   let open Html in
   div ~cls:"row" (
     div ~cls:"small-12 medium-10 large-9 columns" (
-      h2 (list [string "Documentation"; small (string "and guides")])
+      h2 (list [string "Documentation "; small (string "and guides")])
     ))
   ++
   div ~cls:"row"
