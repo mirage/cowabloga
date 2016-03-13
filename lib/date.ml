@@ -51,15 +51,13 @@ type date = {
   min   : int;
 }
 
-let div c t = Cow.Xml.tag "div" ~attrs:["class", c] t
-
 let html_of_date d =
-  Cow.Xml.(tag "date" (list [
-      div "date" (xml_of_month d.month);
-      div "day"  (int d.day);
-      div "year" (int d.year);
-      div "hour" (int d.hour);
-      div "min"  (int d.min);
+  Cow.Html.(div ~cls:"date" (list [
+      div ~cls:"date" (xml_of_month d.month);
+      div ~cls:"day"  (int d.day);
+      div ~cls:"year" (int d.year);
+      div ~cls:"hour" (int d.hour);
+      div ~cls:"min"  (int d.min);
     ]))
 
 let date (year, month, day, hour, min) =
