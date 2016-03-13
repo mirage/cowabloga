@@ -114,16 +114,16 @@ module Blog = struct
       div ~cls:"row"
         (div ~cls:"large-9 columns" (h2 (string title ++ subtitle)));
       div ~cls:"row" (
-          div ~cls:"small-12 large-9 columns" ~attrs:["role", "content"] posts
-        );
-      aside ~cls:"small-12 large-3 columns panel" sidebar;
+        div ~cls:"small-12 large-9 columns" ~attrs:["role", "content"] posts
+        ++ aside ~cls:"small-12 large-3 columns panel" sidebar
+      );
       footer ~cls:"row" (
         div ~cls:"large-12 columns" (
-            hr empty
-            ++ div ~cls:"row" (
-              div ~cls:"large-6 columns" (
-                  p (small (string "&copy; Copyright " ++ copyright))
-              ))))
+          hr empty
+          ++ div ~cls:"row" (
+            div ~cls:"large-6 columns" (
+              p (small (string "&copy; Copyright " ++ copyright))
+            ))))
     ]
 
 end
