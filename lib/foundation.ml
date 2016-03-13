@@ -1,3 +1,4 @@
+
 (*
  * Copyright (c) 2013 Anil Madhavapeddy <anil@recoil.org>
  *
@@ -44,27 +45,27 @@ end
 
 module Sidebar = struct
   type t = [
-   | `link of Link.t
-   | `active_link of Link.t
-   | `divider
-   | `text of string
-   | `html of Cow.Xml.t
+    | `link of Link.t
+    | `active_link of Link.t
+    | `divider
+    | `text of string
+    | `html of Cow.Xml.t
   ]
 
   let t ~title ~content =
     let to_html = function
-      |`link l        -> tag "li" (Link.link l)
-      |`active_link l -> tag "li" ~cls:"active" (Link.link l)
-      |`divider       -> tag "li" ~cls:"divider" empty
-      |`html h        -> tag "li" h
-      |`text t        -> tag "li" (string t)
+      |`link l        -> li (Link.link l)
+      |`active_link l -> li ~cls:"active" (Link.link l)
+      |`divider       -> li ~cls:"divider" empty
+      |`html h        -> li h
+      |`text t        -> li (string t)
     in
     let rec make = function
-      | []     -> empty
-      | hd::tl -> to_html hd ++ make tl
+      | []     -> []
+      | hd::tl -> to_html hd :: make tl
     in
     h5 (string title)
-    ++ tag "ul" ~cls:"side-nav" (make content)
+    ++ ul ~add_li:false ~cls:"side-nav" (make content)
 end
 
 module Index = struct
@@ -113,16 +114,16 @@ module Blog = struct
       div ~cls:"row"
         (div ~cls:"large-9 columns" (h2 (string title ++ subtitle)));
       div ~cls:"row" (
-          div ~cls:"small-12 large-9 columns" ~attrs:["role", "content"] posts
-        );
-      aside ~cls:"small-12 large-3 columns panel" sidebar;
+        div ~cls:"small-12 large-9 columns" ~attrs:["role", "content"] posts
+        ++ aside ~cls:"small-12 large-3 columns panel" sidebar
+      );
       footer ~cls:"row" (
         div ~cls:"large-12 columns" (
-            hr empty
-            ++ div ~cls:"row" (
-              div ~cls:"large-6 columns" (
-                  p (small (string "&copy; Copyright " ++ copyright))
-              ))))
+          hr empty
+          ++ div ~cls:"row" (
+            div ~cls:"large-6 columns" (
+              p (small (string "&copy; Copyright " ++ copyright))
+            ))))
     ]
 
 end
@@ -144,22 +145,22 @@ let body ?google_analytics ?highlight ~title:t ~headers ~content ~trailers () =
     | Some (a, d) ->
       script ~typ:"text/javascript" (
         string @@ Printf.sprintf
-        "//<![CDATA[\n\
-         var _gaq = _gaq || [];\n\
-         _gaq.push(['_setAccount', '%s']);\n\
-         _gaq.push(['_setDomainName', '%s']);\n\
-         _gaq.push(['_trackPageview']);\n\
-         \n\
-         (function() {\n\
-        \  var ga = document.createElement('script'); \
-        \    ga.type = 'text/javascript'; \
-        \    ga.async = true;\n\
-        \  ga.src = ('https:' == document.location.protocol\
-        \    ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';\n\
-        \  var s = document.getElementsByTagName('script')[0]; \
-        \    s.parentNode.insertBefore(ga, s);\n\
-         })();\n\
-         //]]>" a d)
+          "//<![CDATA[\n\
+           var _gaq = _gaq || [];\n\
+           _gaq.push(['_setAccount', '%s']);\n\
+           _gaq.push(['_setDomainName', '%s']);\n\
+           _gaq.push(['_trackPageview']);\n\
+           \n\
+           (function() {\n\
+          \  var ga = document.createElement('script'); \
+          \    ga.type = 'text/javascript'; \
+          \    ga.async = true;\n\
+          \  ga.src = ('https:' == document.location.protocol\
+          \    ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';\n\
+          \  var s = document.getElementsByTagName('script')[0]; \
+          \    s.parentNode.insertBefore(ga, s);\n\
+           })();\n\
+           //]]>" a d)
   in
   head (list [
       meta ~attrs:["charset","utf-8"] empty;
@@ -185,11 +186,11 @@ let body ?google_analytics ?highlight ~title:t ~headers ~content ~trailers () =
 let top_nav ~title ~title_uri ~nav_links =
   div ~cls:"contain-to-grid fixed" (
     nav ~cls:"top-bar" ~attrs:["data-topbar",""] (
-      tag "ul" ~cls:"title-area" (list [
-        tag "li" ~cls:"name" (h1 (a ~href:title_uri title));
-        tag "li" ~cls:"toggle-topbar menu-icon"
+      ul ~add_li:false ~cls:"title-area" [
+        li ~cls:"name" (h1 (a ~href:title_uri title));
+        li ~cls:"toggle-topbar menu-icon"
           (a ~href:(Uri.of_string "#") (span (string "Menu")));
-        ])
+      ]
       ++ section ~cls:"top-bar-section" nav_links
     ))
 
@@ -197,8 +198,8 @@ let page ~body =
   Printf.sprintf
     "<!DOCTYPE html>\n\
     \  <!--[if IE 8]><html class=\"no-js lt-ie9\" lang=\"en\" \
-    \      xmlns=\"http://www.w3.org/1999/xhtml\"><![endif]-->\n\
+     xmlns=\"http://www.w3.org/1999/xhtml\"><![endif]-->\n\
     \  <!--[if gt IE 8]><!--><html class=\"no-js\" lang=\"en\" \
-    \      xmlns=\"http://www.w3.org/1999/xhtml\"><!--<![endif]-->\n\
+     xmlns=\"http://www.w3.org/1999/xhtml\"><!--<![endif]-->\n\
      %s\n\
      </html>" (Cow.Html.to_string body)

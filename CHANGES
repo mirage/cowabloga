@@ -1,3 +1,6 @@
+0.2.0 (2016-03-16)
+* Use cow 2.0.0, do not use camlp4 extensions anymore
+
 0.1.0 (2016-02-29)
 * Do not use lwt.syntax
 * Use magic-mime to set the page headers for assets
