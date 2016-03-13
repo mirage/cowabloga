@@ -23,6 +23,7 @@ open Lwt.Infix
 open Cow
 open Atom_feed
 open Date
+open Cow.Html
 
 type body =
   | File of string
@@ -37,12 +38,12 @@ type entry = {
 }
 
 let html_of_author author =
-  Html.(list [
+  list [
     string "Last modified by ";
     match author.Atom.uri with
     | None     -> string author.Atom.name
     | Some uri -> a ~href:(Uri.of_string uri) (string author.Atom.name)
-  ])
+  ]
 
 let atom_date d =
   ( d.year, d.month, d.day, d.hour, d.min)
@@ -66,21 +67,21 @@ let compare_dates e1 e2 =
 (* Convert a wiki record into an Html.t fragment *)
 let html_of_entry read_file e =
   body_of_entry read_file e >|= fun b ->
-  Html.(h3 (a ~href:(Uri.of_string e.permalink) (string e.subject)) ++ b)
+  h3 (a ~href:(Uri.of_string e.permalink) (string e.subject)) ++ b
 
 let html_of_index feed =
   feed.read_entry "index.md" >|= fun b ->
-  Html.(div ~cls:"wiki_entry" (div ~cls:"wiki_entry_body" b))
+  div ~cls:"wiki_entry" (div ~cls:"wiki_entry_body" b)
 
 let permalink feed e =
   sprintf "%s%s%s" feed.base_uri feed.id e.permalink
 
 let html_of_recent_updates feed (entries:entry list) =
   let ents = List.rev (List.sort compare_dates entries) in
-  let open Html in
   let html_of_ent e =
-    a ~href:(Uri.of_string @@ permalink feed e) empty
-    ++ span ~cls:"lastmod" (short_html_of_date e.updated)
+    a ~href:(Uri.of_string @@ permalink feed e) (string e.subject)
+    ++ span ~cls:"lastmod"
+      (string "(" ++ short_html_of_date e.updated ++ string ")")
   in
   h6 (string "Recent Updates") ++ ul ~cls:"side-nav" (List.map html_of_ent ents)
 
@@ -89,9 +90,8 @@ let html_of_page ~content ~sidebar =
   content >|= fun content ->
   let sidebar =
     match sidebar with
-    | [] -> []
-    | sidebar ->
-      Html.tag "aside" ~cls:"medium-3 large-3 columns panel" sidebar
+    | []      -> []
+    | sidebar -> aside ~cls:"medium-3 large-3 columns panel" sidebar
   in
   let open Html in
   div ~cls:"row" (
