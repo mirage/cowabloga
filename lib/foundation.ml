@@ -15,15 +15,14 @@
  *
  *)
 
+open Cow.Html
+
 module Link = struct
   type t = string * Uri.t
   type links = t list
-  let link ?(cl="") (txt,uri) =
-    <:html<<a href=$uri:uri$ class=$str:cl$>$str:txt$</a>&>>
+  let link ?(cl="") (txt, uri) = a ~href:uri ~cls:cl (string txt)
 
-  let mk_ul_links ~cl ~links =
-    let items = List.map (fun l -> <:html<<li>$l$</li>&>>) links in
-    <:html<<ul class=$str:cl$>$list:items$</ul>&>>
+  let mk_ul_links ~cl ~links = ul ~cls:cl links
 
   let top_nav ?(align=`Right) (links:links) =
     let links = List.map (link ~cl:"") links in
@@ -53,39 +52,30 @@ module Sidebar = struct
   ]
 
   let t ~title ~content =
-    let to_html (x:t) =
-      match x with
-      |`link l -> <:html<<li>$Link.link l$</li>&>>
-      |`active_link l -> <:html<<li class="active">$Link.link l$</li>&>>
-      |`divider -> <:html<<li class="divider" />&>>
-      |`html h -> <:html<<li>$h$</li>&>>
-      |`text t -> <:html<<li>$str:t$</li>&>>
+    let to_html = function
+      |`link l        -> tag "li" (Link.link l)
+      |`active_link l -> tag "li" ~cls:"active" (Link.link l)
+      |`divider       -> tag "li" ~cls:"divider" empty
+      |`html h        -> tag "li" h
+      |`text t        -> tag "li" (string t)
     in
     let rec make = function
-      | [] -> Cow.Html.nil
-      | hd::tl -> <:html<$to_html hd$$make tl$>>
+      | []     -> empty
+      | hd::tl -> to_html hd ++ make tl
     in
-    <:html<<h5>$str:title$</h5>
-      <ul class="side-nav">
-        $make content$
-      </ul>
-   >>
+    h5 (string title)
+    ++ tag "ul" ~cls:"side-nav" (make content)
 end
 
 module Index = struct
   let t ~top_nav =
-    let content = <:html<
-      $top_nav$
-      <br />
-      <div class="row">
-        <div class="large-12 columns">
-          <img src="http://placehold.it/1000x400&amp;text=img"></img>
-          <hr />
-        </div>
-      </div>
-    >>
-    in
-    content
+    top_nav
+    ++ br empty
+    ++ div ~cls:"row" (
+      div ~cls:"large-12 columns" (
+        img (Uri.of_string "http://placehold.it/1000x400&amp;text=img")
+        ++ hr empty
+      ))
 end
 
 let rec intercalate x = function
@@ -94,133 +84,121 @@ let rec intercalate x = function
   | e::es -> e :: x :: intercalate x es
 
 module Blog = struct
+
   let post ~title ~authors ~date ~content =
     let open Link in
     let author = match authors with
-      | [] -> <:html< >>
+      | [] -> empty
       | _  ->
         let a_nodes =
-          intercalate <:html<, >> (List.map (link ~cl:"") authors)
+          intercalate (string ", ") (List.map (link ~cl:"") authors)
         in
-        <:html<By $list: a_nodes$>>
+        string "By " ++ list a_nodes
     in
     let title_text, title_uri = title in
-    <:html<
-      <article>
-        $date$
-        <h4><a href=$uri:title_uri$>$str:title_text$</a></h4>
-        <p><i>$author$</i></p>
-        $content$
-      </article>
-    >>
+    tag "article" (
+      date
+      ++ h4 (a ~href:title_uri (string title_text))
+      ++ p (i author)
+      ++ content
+    )
 
   let t ~title ~subtitle ~sidebar ~posts ~copyright () =
     let subtitle =
       match subtitle with
-      | None -> <:html<&>>
-      | Some s -> <:html<<small>$str:s$</small>&>>
+      | None   -> empty
+      | Some s -> small (string s)
     in
-    <:html<
-    <div class="row">
-      <div class="large-9 columns">
-        <h2>$str:title$ $subtitle$</h2>
-      </div>
-    </div>
-    <div class="row">
-      <div class="small-12 large-9 columns" role="content">
-        $posts$
-      </div>
-      <aside class="small-12 large-3 columns panel">
-        $sidebar$
-      </aside>
-    </div>
-    <footer class="row">
-      <div class="large-12 columns">
-        <hr />
-        <div class="row">
-          <div class="large-6 columns">
-            <p><small>&copy; Copyright $copyright$</small></p>
-          </div>
-        </div>
-      </div>
-    </footer>
-    >>
+    list [
+      div ~cls:"row"
+        (div ~cls:"large-9 columns" (h2 (string title ++ subtitle)));
+      div ~cls:"row" (
+          div ~cls:"small-12 large-9 columns" ~attrs:["role", "content"] posts
+        );
+      aside ~cls:"small-12 large-3 columns panel" sidebar;
+      footer ~cls:"row" (
+        div ~cls:"large-12 columns" (
+            hr empty
+            ++ div ~cls:"row" (
+              div ~cls:"large-6 columns" (
+                  p (small (string "&copy; Copyright " ++ copyright))
+              ))))
+    ]
+
 end
 
-let body ?google_analytics ?highlight
-      ~title ~headers ~content ~trailers () =
-  (* Cannot be inlined below as the $ is interpreted as an antiquotation *)
+let body ?google_analytics ?highlight ~title:t ~headers ~content ~trailers () =
+  (* Cannot be inlined below as the $ is interpreted as an
+     antiquotation *)
   let js_init = [`Data "$(document).foundation();"] in
   let highlight_css, highlight_trailer = match highlight with
-    | None -> <:html< >>, <:html< >>
+    | None       -> empty, empty
     | Some style ->
-      <:html< <link rel="stylesheet" href="$str:style$"> </link> >>,
-      <:html<
-        <script src="/js/vendor/highlight.pack.js"> </script>
-        <script> hljs.initHighlightingOnLoad(); </script>
-      >>
+      link ~attrs:["rel", "stylesheet"; "href", style ] empty,
+      script ~src:"/js/vendor/highlight.pack.js" empty
+      ++ script (string "hljs.initHighlightingOnLoad(); ")
   in
   let ga =
     match google_analytics with
-    | None -> []
-    | Some (a,d) -> <:html<
-         <script type="text/javascript">
-           //<![CDATA[
-           var _gaq = _gaq || [];
-           _gaq.push(['_setAccount', '$[`Data a]$']);
-           _gaq.push(['_setDomainName', '$[`Data d]$']);
-           _gaq.push(['_trackPageview']);
-
-           (function() {
-              var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-              ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-            })();
-           //]]>
-         </script> >>
+    | None        -> []
+    | Some (a, d) ->
+      script ~typ:"text/javascript" (
+        string @@ Printf.sprintf
+        "//<![CDATA[\n\
+         var _gaq = _gaq || [];\n\
+         _gaq.push(['_setAccount', '%s']);\n\
+         _gaq.push(['_setDomainName', '%s']);\n\
+         _gaq.push(['_trackPageview']);\n\
+         \n\
+         (function() {\n\
+        \  var ga = document.createElement('script'); \
+        \    ga.type = 'text/javascript'; \
+        \    ga.async = true;\n\
+        \  ga.src = ('https:' == document.location.protocol\
+        \    ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';\n\
+        \  var s = document.getElementsByTagName('script')[0]; \
+        \    s.parentNode.insertBefore(ga, s);\n\
+         })();\n\
+         //]]>" a d)
   in
-  <:html<
-    <head>
-      <meta charset="utf-8" />
-      <meta name="viewport" content="width=device-width"/>
-      <title>$str:title$</title>
-      <link rel="stylesheet" href="/css/foundation.min.css"> </link>
-      <link rel="stylesheet" href="/css/site.css"> </link>
-      <script src="/js/vendor/custom.modernizr.js"> </script>
-      $highlight_css$
-      $ga$
-      $headers$
-    </head>
-    <body>
-      $content$
-      <script src="/js/vendor/jquery.min.js"> </script>
-      <script src="/js/foundation/foundation.min.js"> </script>
-      <script src="/js/foundation/foundation.topbar.js"> </script>
-      <script> $js_init$ </script>
-      $highlight_trailer$
-      $trailers$
-    </body>
-  >>
+  head (list [
+      meta ~attrs:["charset","utf-8"] empty;
+      meta ~attrs:["name","viewport"; "content","width=device-width"] empty;
+      title (string t);
+      link ~attrs:["rel","stylesheet"; "href","/css/foundation.min.css"] empty;
+      link ~attrs:["rel","stylesheet"; "href","/css/site.css"] empty;
+      script ~src:"/js/vendor/custom.modernizr.js" empty;
+      highlight_css;
+      ga;
+      headers;
+    ])
+  ++ body (list [
+      content;
+      script ~src:"/js/vendor/jquery.min.js" empty;
+      script ~src:"/js/foundation/foundation.min.js" empty;
+      script ~src:"/js/foundation/foundation.topbar.js" empty;
+      script js_init;
+      highlight_trailer;
+      trailers
+    ])
 
 let top_nav ~title ~title_uri ~nav_links =
-  <:html<
-    <div class="contain-to-grid fixed">
-    <nav class="top-bar" data-topbar="">
-    <ul class="title-area">
-    <li class="name"><h1><a href="$uri:title_uri$">$title$</a></h1></li>
-    <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
-    </ul>
-    <section class="top-bar-section">
-      $nav_links$
-    </section>
-    </nav>
-    </div>
-  >>
+  div ~cls:"contain-to-grid fixed" (
+    nav ~cls:"top-bar" ~attrs:["data-topbar",""] (
+      tag "ul" ~cls:"title-area" (list [
+        tag "li" ~cls:"name" (h1 (a ~href:title_uri title));
+        tag "li" ~cls:"toggle-topbar menu-icon"
+          (a ~href:(Uri.of_string "#") (span (string "Menu")));
+        ])
+      ++ section ~cls:"top-bar-section" nav_links
+    ))
 
 let page ~body =
-  Printf.sprintf "\
-<!DOCTYPE html>
-  <!--[if IE 8]><html class=\"no-js lt-ie9\" lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\"><![endif]-->
-  <!--[if gt IE 8]><!--><html class=\"no-js\" lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\"><!--<![endif]-->
-  %s
-</html>" (Cow.Html.to_string body)
+  Printf.sprintf
+    "<!DOCTYPE html>\n\
+    \  <!--[if IE 8]><html class=\"no-js lt-ie9\" lang=\"en\" \
+    \      xmlns=\"http://www.w3.org/1999/xhtml\"><![endif]-->\n\
+    \  <!--[if gt IE 8]><!--><html class=\"no-js\" lang=\"en\" \
+    \      xmlns=\"http://www.w3.org/1999/xhtml\"><!--<![endif]-->\n\
+     %s\n\
+     </html>" (Cow.Html.to_string body)

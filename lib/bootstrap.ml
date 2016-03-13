@@ -15,69 +15,80 @@
  *
  *)
 
-let body ?google_analytics ~title ~headers content =
+open Cow.Html
+
+let body ?google_analytics ~title:t ~headers content =
   let ga = match google_analytics with
-    | None -> []
-    | Some (a,d) ->
-      <:html<
-        <script type="text/javascript">
-          //<![CDATA[
-          var _gaq = _gaq || [];
-          _gaq.push(['_setAccount', '$[`Data a]$']);
-          _gaq.push(['_setDomainName', '$[`Data d]$']);
-          _gaq.push(['_trackPageview']);
+    | None        -> []
+    | Some (a, d) ->
+      script ~typ:"text/javascript" (
+        string @@ Printf.sprintf
+          "//<![CDATA[\n\
+           var _gaq = _gaq || [];\n\
+           _gaq.push(['_setAccount', '%s']);\n\
+           _gaq.push(['_setDomainName', '%s']);\n\
+           _gaq.push(['_trackPageview']);\n\
+           \n\
+           (function() {\n\
+          \  var ga = document.createElement('script');\n\
+          \  ga.type = 'text/javascript'; ga.async = true;\n\
+          \  ga.src =\n\
+          \    ('https:' == document.location.protocol\n\
+          \    ? 'https://ssl'\n\
+          \    : 'http://www') + '.google-analytics.com/ga.js';\n\
+          \  var s = document.getElementsByTagName('script')[0];\n\
+          \  s.parentNode.insertBefore(ga, s);\n\
+           })();'\n\
+           //]]>" a d
+      ) in
+  head (list [
+      meta ~attrs:["charset","utf-8"] empty;
+      meta ~attrs:[
+        "http-equiv","Content-Type";
+        "content"   ,"text/html";
+        "charset"   ,"UTF-8"
+      ] empty;
+      meta ~attrs:[
+        "name"         , "viewport";
+        "content"      ,"width=device-width";
+        "initial-scale","1";
+        "maximum-scale","1"
+      ] empty;
+      string (
+        " <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->\n\
+         <!--[if lt IE 9]>");
+      script ~src:"http://html5shim.googlecode.com/svn/trunk/html5.js" empty;
+      string ("<![endif]-->");
 
-          (function() {
-             var ga = document.createElement('script');
-             ga.type = 'text/javascript'; ga.async = true;
-             ga.src =
-               ('https:' == document.location.protocol
-               ? 'https://ssl'
-               : 'http://www') + '.google-analytics.com/ga.js';
-             var s = document.getElementsByTagName('script')[0];
-             s.parentNode.insertBefore(ga, s);
-           })();
-          //]]>
-        </script>
-      >>
-  in
-  <:html<
-    <head>
-      <meta charset="utf-8" />
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <meta name="viewport"
-            content="width=device-width, initial-scale=1, maximum-scale=1" />
+      title (string t);
 
-      <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
-      <!--[if lt IE 9]>
-        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"> </script>
-      <![endif]-->
+      link ~attrs:[
+        "rel"  , "stylesheet";
+        "media", "screen";
+        "type" , "text/css";
+        "href" , "/css/bootstrap.min.css"
+      ] empty;
+      link ~attrs:[
+        "rel"  , "stylesheet";
+        "media", "screen";
+        "type" , "text/css";
+        "href" , "/css/bootstrap-responsive.min.css"
+      ] empty;
+      link ~attrs:[
+        "rel" , "stylesheet";
+        "href", "/css/site.css"
+      ] empty;
 
-      <title>$str:title$</title>
+      script ~src:"/js/jquery-1.9.1.min.js" empty;
+      script ~src:"/js/bootstrap.min.js" empty;
 
-      <link rel="stylesheet" media="screen" type="text/css"
-            href="/css/bootstrap.min.css"> </link>
-      <link rel="stylesheet" media="screen" type="text/css"
-            href="/css/bootstrap-responsive.min.css"> </link>
-      <link rel="stylesheet" href="/css/site.css"> </link>
-
-      <script src="/js/jquery-1.9.1.min.js"> </script>
-      <script src="/js/bootstrap.min.js"> </script>
-
-      $headers$
-    </head>
-    <body>
-      <div class="container-fluid">
-        $content$
-      </div>
-
-      $ga$
-    </body>
-  >>
+      headers
+    ])
+  ++ body (div ~cls:"container-fluid" content ++ ga)
 
 let page ?(ns="") body =
-  Printf.sprintf "\
-<!DOCTYPE html>
-  <html '%s'>
-  %s
-</html>" ns (Cow.Html.to_string body)
+  Printf.sprintf
+    "<!DOCTYPE html>\n\
+     <html '%s'>\n\
+     %s\n\
+     </html>" ns (Cow.Html.to_string body)

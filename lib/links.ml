@@ -47,7 +47,11 @@ let atom_entry_of_link (feed:Atom_feed.t) l =
     Atom.mk_link ~rel:`alternate ~typ:"text/html" l.uri;
   ] in
   let content =
-    <:html<<a href=$uri:l.uri$>$str:l.title$</a>, from $str:l.stream.name$>>
+    Html.(list [
+        a ~href:l.uri (string l.title);
+        string " from ";
+        string l.stream.name
+      ])
   in
   let meta = {
     Atom.id      = Uri.to_string perma_uri;

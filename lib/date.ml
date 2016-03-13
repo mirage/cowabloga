@@ -41,8 +41,7 @@ let long_string_of_month m =
   | 12 -> "December"
   | _  -> "???"
 
-let xml_of_month m =
-  <:xml<$str:short_string_of_month m$>>
+let xml_of_month m = Cow.Xml.string @@ short_string_of_month m
 
 type date = {
   month : month;
@@ -52,16 +51,16 @@ type date = {
   min   : int;
 }
 
+let div c t = Cow.Xml.tag "div" ~attrs:["class", c] t
+
 let html_of_date d =
-  <:xml<
-    <div class="date">
-      <div class="month">$xml_of_month d.month$</div>
-      <div class="day">$int:d.day$</div>
-      <div class="year">$int:d.year$</div>
-      <div class="hour">$int:d.hour$</div>
-      <div class="min">$int:d.min$</div>
-    </div>
-  >>
+  Cow.Xml.(tag "date" (list [
+      div "date" (xml_of_month d.month);
+      div "day"  (int d.day);
+      div "year" (int d.year);
+      div "hour" (int d.hour);
+      div "min"  (int d.min);
+    ]))
 
 let date (year, month, day, hour, min) =
   { month; day; year; hour; min }

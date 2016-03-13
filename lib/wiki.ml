@@ -37,17 +37,18 @@ type entry = {
 }
 
 let html_of_author author =
-  match author.Atom.uri with
-  | None     ->
-    <:html<Last modified by $str:author.Atom.name$>>
-  | Some uri ->
-    <:html<Last modified by <a href=$str:uri$>$str:author.Atom.name$</a>&>>
+  Html.(list [
+    string "Last modified by ";
+    match author.Atom.uri with
+    | None     -> string author.Atom.name
+    | Some uri -> a ~href:(Uri.of_string uri) (string author.Atom.name)
+  ])
 
 let atom_date d =
   ( d.year, d.month, d.day, d.hour, d.min)
 
 let short_html_of_date d =
-  <:xml<$int:d.day$ $xml_of_month d.month$ $int:d.year$>>
+  Xml.(list [ int d.day; xml_of_month d.month; int d.year ])
 
 let body_of_entry {read_entry; _} e =
   match e.body with
@@ -60,36 +61,24 @@ let compare_dates e1 e2 =
 
 (* Convert a wiki record into an Html.t fragment *)
 let html_of_entry read_file e =
-  body_of_entry read_file e >|= fun body ->
-  <:xml<
-    <h3><a href=$str:e.permalink$>$str:e.subject$</a></h3>
-    $body$
-  >>
+  body_of_entry read_file e >|= fun b ->
+  Html.(h3 (a ~href:(Uri.of_string e.permalink) (string e.subject)) ++ b)
 
 let html_of_index feed =
-  feed.read_entry "index.md" >|= fun body ->
-  <:xml<
-    <div class="wiki_entry">
-      <div class="wiki_entry_body">$body$</div>
-    </div>
-   >>
+  feed.read_entry "index.md" >|= fun b ->
+  Html.(div ~cls:"wiki_entry" (div ~cls:"wiki_entry_body" b))
 
 let permalink feed e =
   sprintf "%s%s%s" feed.base_uri feed.id e.permalink
 
 let html_of_recent_updates feed (entries:entry list) =
   let ents = List.rev (List.sort compare_dates entries) in
-  let html_of_ent e = <:xml<
-    <li><a href=$str:permalink feed e$>$str:e.subject$</a>
-    <span class="lastmod">($short_html_of_date e.updated$)</span>
-    </li>
-  >> in
-  <:xml<
-    <h6>Recent Updates</h6>
-    <ul class="side-nav">
-    $list:List.map html_of_ent ents$
-    </ul>
-  >>
+  let open Html in
+  let html_of_ent e =
+    a ~href:(Uri.of_string @@ permalink feed e) empty
+    ++ span ~cls:"lastmod" (short_html_of_date e.updated)
+  in
+  h6 (string "Recent Updates") ++ ul ~cls:"side-nav" (List.map html_of_ent ents)
 
 (* Main wiki page; disqus comments are for full entry pages *)
 let html_of_page ~content ~sidebar =
@@ -98,22 +87,16 @@ let html_of_page ~content ~sidebar =
     match sidebar with
     | [] -> []
     | sidebar ->
-       <:xml<
-         <aside class="medium-3 large-3 columns panel">
-           $sidebar$
-         </aside>
-       >> in
-  <:xml<
-    <div class="row">
-      <div class="small-12 medium-10 large-9 columns">
-      <h2>Documentation <small> and guides</small></h2>
-      </div>
-    </div>
-    <div class="row">
-      <div class="small-12 medium-10 large-9 columns">$content$</div>
-      $sidebar$
-    </div>
-  >>
+      Html.tag "aside" ~cls:"medium-3 large-3 columns panel" sidebar
+  in
+  let open Html in
+  div ~cls:"row" (
+    div ~cls:"small-12 medium-10 large-9 columns" (
+      h2 (list [string "Documentation"; small (string "and guides")])
+    ))
+  ++
+  div ~cls:"row"
+    (div ~cls:"small-12 medium-10 large-9 columns" content ++ sidebar)
 
 let cmp_ent a b =
   Atom.compare (atom_date a.updated) (atom_date b.updated)

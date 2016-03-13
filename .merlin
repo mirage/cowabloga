@@ -2,3 +2,4 @@ PKG cohttp lwt cow magic-mime
 S site
 B _build/**
 S lib
+S lib_test

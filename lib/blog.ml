@@ -16,14 +16,15 @@
  *
  *)
 
-(** Blog management: entries, ATOM feeds, etc. *)
+(** Blog management: entries, ATOM feeds, etc.
+
+    An Atom feed has metadata plus a way to retrieve entries. *)
 
 open Printf
 open Lwt.Infix
 open Cow
 open Atom_feed
 
-(** An Atom feed: metadata plus a way to retrieve entries. *)
 (** A feed is made up of Entries. *)
 module Entry = struct
 
@@ -93,17 +94,17 @@ module Entry = struct
 end
 
 (** Entries separated by <hr /> tags *)
-let default_separator = <:html< <hr /> >>
+let default_separator = Html.(hr empty)
 
 (** [to_html ?sep feed entries] renders a series of entries in a feed, separated
     by [sep], defaulting to [default_separator]. *)
 let to_html ?(sep=default_separator) ~feed ~entries =
   let rec concat = function
-    | [] -> Lwt.return <:html<&>>
+    | [] -> Lwt.return Html.empty
     | hd::tl ->
       Entry.to_html ~feed ~entry:hd >>= fun hd ->
       concat tl >|= fun tl ->
-      <:html< $hd$$sep$$tl$ >>
+      Html.list [ hd; sep; tl ]
   in
   concat (List.sort Entry.compare entries)
 

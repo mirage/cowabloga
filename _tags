@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 6a312d5ac6ee75ae0a0f4d8aa1aada79)
+# DO NOT EDIT (digest: 7c805c8b763ebd484104cafc27e5bc18)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
@@ -27,7 +27,6 @@ true: annot, bin_annot
 "lib/foundation.cmx": for-pack(Cowabloga)
 "lib/bootstrap.cmx": for-pack(Cowabloga)
 <lib/*.ml{,i,y}>: pkg_cow
-<lib/*.ml{,i,y}>: pkg_cow.syntax
 <lib/*.ml{,i,y}>: pkg_cstruct
 <lib/*.ml{,i,y}>: pkg_lwt
 <lib/*.ml{,i,y}>: pkg_magic-mime
@@ -36,7 +35,6 @@ true: annot, bin_annot
 # Executable cowabloga_test
 <lib_test/serve.{native,byte}>: pkg_cohttp.lwt
 <lib_test/serve.{native,byte}>: pkg_cow
-<lib_test/serve.{native,byte}>: pkg_cow.syntax
 <lib_test/serve.{native,byte}>: pkg_cstruct
 <lib_test/serve.{native,byte}>: pkg_lwt
 <lib_test/serve.{native,byte}>: pkg_magic-mime
@@ -45,7 +43,6 @@ true: annot, bin_annot
 <lib_test/serve.{native,byte}>: use_cowabloga
 <lib_test/*.ml{,i,y}>: pkg_cohttp.lwt
 <lib_test/*.ml{,i,y}>: pkg_cow
-<lib_test/*.ml{,i,y}>: pkg_cow.syntax
 <lib_test/*.ml{,i,y}>: pkg_cstruct
 <lib_test/*.ml{,i,y}>: pkg_lwt
 <lib_test/*.ml{,i,y}>: pkg_magic-mime
