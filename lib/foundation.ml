@@ -1,3 +1,4 @@
+
 (*
  * Copyright (c) 2013 Anil Madhavapeddy <anil@recoil.org>
  *
@@ -197,8 +198,8 @@ let page ~body =
   Printf.sprintf
     "<!DOCTYPE html>\n\
     \  <!--[if IE 8]><html class=\"no-js lt-ie9\" lang=\"en\" \
-    \      xmlns=\"http://www.w3.org/1999/xhtml\"><![endif]-->\n\
+     xmlns=\"http://www.w3.org/1999/xhtml\"><![endif]-->\n\
     \  <!--[if gt IE 8]><!--><html class=\"no-js\" lang=\"en\" \
-    \      xmlns=\"http://www.w3.org/1999/xhtml\"><!--<![endif]-->\n\
+     xmlns=\"http://www.w3.org/1999/xhtml\"><!--<![endif]-->\n\
      %s\n\
      </html>" (Cow.Html.to_string body)
