@@ -61,11 +61,11 @@ let to_html ?limit feeds =
   let open Cow.Html in
   let open Cow.Atom in
   to_atom_entries feeds >|=
-  List.map (fun ({entry; _}, info) ->
+  List.mapi (fun n ({entry; _}, info) ->
       let fa = Printf.sprintf "fa-li fa %s" (feed_icon info) in
       (* Find an alternate HTML link *)
       try
-        (match limit with |Some x when i > x -> raise Not_found |_ -> ());
+        (match limit with Some x when n > x -> raise Not_found |_ -> ());
         let uri =
           let l = List.find (fun l ->
               l.rel = `alternate && l.typ = Some "text/html"
