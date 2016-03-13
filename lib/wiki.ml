@@ -48,7 +48,11 @@ let atom_date d =
   ( d.year, d.month, d.day, d.hour, d.min)
 
 let short_html_of_date d =
-  Xml.(list [ int d.day; xml_of_month d.month; int d.year ])
+  Xml.(list [
+      int d.day; string " ";
+      xml_of_month d.month; string " ";
+      int d.year
+    ])
 
 let body_of_entry {read_entry; _} e =
   match e.body with
