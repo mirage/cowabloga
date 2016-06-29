@@ -1,3 +1,6 @@
+0.2.1 (2016-06-29)
+* add some missing spaces to feed rendering
+
 0.2.0 (2016-03-16)
 * Use cow 2.0.0, do not use camlp4 extensions anymore
 

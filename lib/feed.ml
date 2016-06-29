@@ -79,6 +79,7 @@ let to_html ?limit feeds =
         list [
           a ~href:(feed_uri info) (i ~cls:fa empty);
           a ~href:uri (string entry.title);
+          string " ";
           i ~cls:"front_date" (string date)
         ]
       with Not_found -> empty
