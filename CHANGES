@@ -1,3 +1,6 @@
+0.2.2 (2017-05-13)
+* fix warnings with lwt >= 2.7.0
+
 0.2.1 (2016-06-29)
 * add some missing spaces to feed rendering
 

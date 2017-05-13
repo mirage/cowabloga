@@ -1,6 +1,6 @@
 OASISFormat: 0.3
 Name:        cowabloga
-Version:     0.2.1
+Version:     0.2.2
 Synopsis:    Blog templates using Cow and Omd
 Authors:     Anil Madhavapeddy, Richard Mortier, Thomas Gazagnaire
 License:     ISC
