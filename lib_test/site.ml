@@ -17,7 +17,7 @@ let config = {
 }
 
 let posts =
-  Lwt_unix.run begin
+  Lwt_main.run begin
     Blog.to_html ?sep:None ~feed:config ~entries:Mirage_blog.entries
   end
 

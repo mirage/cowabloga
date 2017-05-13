@@ -36,4 +36,4 @@ let make_server () =
   let ctx = Cohttp_lwt_unix_net.init () in
   Server.create ~ctx ~mode:(`TCP (`Port 8081)) config
 
-let _ = Lwt_unix.run (make_server ())
+let _ = Lwt_main.run (make_server ())
