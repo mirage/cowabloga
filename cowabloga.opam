@@ -7,9 +7,14 @@ dev-repo:     "https://github.com/mirage/cowabloga.git"
 homepage:     "https://github.com/mirage/cowabloga"
 bug-reports:  "https://github.com/mirage/cowabloga/issues"
 
-build: [make "all"]
-install: [make "install"]
-remove: ["ocamlfind" "remove" "cowabloga"]
+build: [
+  [ "jbuilder" "build" ]
+]
+
+build-test: [
+  [ "jbuilder" "runtest" ]
+]
+
 depends: [
   "cow" {>= "2.0.0"}
   "omd" {>= "0.8.2"}
@@ -18,5 +23,5 @@ depends: [
   "cstruct" {>= "1.0.1"}
   "magic-mime"
   "ocamlfind" {build}
-  "ocamlbuild" {build}
+  "jbuilder"  {build}
 ]
