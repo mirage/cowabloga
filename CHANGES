@@ -1,3 +1,7 @@
+0.3.0 (2017-05-16)
+* add a LICENSE file
+* build via jbuilder
+
 0.2.2 (2017-05-13)
 * fix warnings with lwt >= 2.7.0
 
