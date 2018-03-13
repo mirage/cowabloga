@@ -35,7 +35,7 @@ let split_path path =
     | [] | [""] -> []
     | hd::tl -> hd :: aux tl
   in
-  List.filter (fun e -> e <> "") (aux (Re_str.(split_delim (regexp_string "/") path)))
+  List.filter (fun e -> e <> "") (aux (Re.Str.(split_delim (regexp_string "/") path)))
 
 let headers path = ["content-type", Magic_mime.lookup path]
 
