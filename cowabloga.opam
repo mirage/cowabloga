@@ -20,6 +20,5 @@ depends: [
   "cohttp" {>= "0.15.0"}
   "cstruct" {>= "1.0.1"}
   "magic-mime"
-  "ocamlfind" {build}
   "jbuilder"  {build}
 ]
