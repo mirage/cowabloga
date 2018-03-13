@@ -8,12 +8,9 @@ homepage:     "https://github.com/mirage/cowabloga"
 bug-reports:  "https://github.com/mirage/cowabloga/issues"
 
 build: [
-  [ "jbuilder" "build" ]
+  ["jbuilder" "build" "-p" name "-j" jobs]
 ]
-
-build-test: [
-  [ "jbuilder" "runtest" ]
-]
+build-test: [["jbuilder" "runtest" "-p" name "-j" jobs]]
 
 depends: [
   "re" {>= "1.7.2"}
