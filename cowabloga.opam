@@ -8,20 +8,18 @@ homepage:     "https://github.com/mirage/cowabloga"
 bug-reports:  "https://github.com/mirage/cowabloga/issues"
 
 build: [
-  [ "jbuilder" "build" ]
+  ["jbuilder" "build" "-p" name "-j" jobs]
 ]
-
-build-test: [
-  [ "jbuilder" "runtest" ]
-]
+build-test: [["jbuilder" "runtest" "-p" name "-j" jobs]]
 
 depends: [
+  "re" {>= "1.7.2"}
   "cow" {>= "2.0.0"}
   "omd" {>= "0.8.2"}
   "lwt" {>= "2.4.3"}
-  "cohttp" {>= "0.15.0"}
   "cstruct" {>= "1.0.1"}
   "magic-mime"
-  "ocamlfind" {build}
   "jbuilder"  {build}
+  "cohttp" {test & >= "0.5.0"}
+  "cohttp-lwt-unix" {test}
 ]
