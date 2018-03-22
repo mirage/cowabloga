@@ -24,4 +24,5 @@ depends: [
   "magic-mime"
   "ocamlfind" {build}
   "jbuilder"  {build}
+  "re" {>="1.7.2"}
 ]
