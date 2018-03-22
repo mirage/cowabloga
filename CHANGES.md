@@ -1,3 +1,6 @@
+0.4.0 (2018-03-22)
+* use latest Re interface with module aliases.
+
 0.3.0 (2017-05-16)
 * add a LICENSE file
 * build via jbuilder
