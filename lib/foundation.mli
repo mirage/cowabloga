@@ -50,7 +50,7 @@ module Blog : sig
 end
 
 val body:
-  ?google_analytics:(string * string) -> ?highlight:string
+  ?google_analytics:(string * string) -> ?highlight:Uri.t
   -> title:string
   -> headers:Cow.Html.t -> content:Cow.Html.t -> trailers:Cow.Html.t
   -> unit -> Cow.Html.t

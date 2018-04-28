@@ -21,7 +21,7 @@ let body ?google_analytics ~title:t ~headers content =
   let ga = match google_analytics with
     | None        -> []
     | Some (a, d) ->
-      script ~typ:"text/javascript" (
+      script ~ty:"text/javascript" (
         string @@ Printf.sprintf
           "//<![CDATA[\n\
            var _gaq = _gaq || [];\n\
@@ -42,45 +42,35 @@ let body ?google_analytics ~title:t ~headers content =
            //]]>" a d
       ) in
   head (list [
-      meta ~attrs:["charset","utf-8"] empty;
-      meta ~attrs:[
+      meta ["charset","utf-8"];
+      meta [
         "http-equiv","Content-Type";
         "content"   ,"text/html";
         "charset"   ,"UTF-8"
-      ] empty;
-      meta ~attrs:[
+      ];
+      meta [
         "name"         , "viewport";
         "content"      ,"width=device-width";
         "initial-scale","1";
         "maximum-scale","1"
-      ] empty;
+      ];
       string (
         " <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->\n\
          <!--[if lt IE 9]>");
-      script ~src:"http://html5shim.googlecode.com/svn/trunk/html5.js" empty;
+      (let u = "http://html5shim.googlecode.com/svn/trunk/html5.js" in
+       script ~src:(Uri.of_string u) empty);
       string ("<![endif]-->");
 
       title (string t);
 
-      link ~attrs:[
-        "rel"  , "stylesheet";
-        "media", "screen";
-        "type" , "text/css";
-        "href" , "/css/bootstrap.min.css"
-      ] empty;
-      link ~attrs:[
-        "rel"  , "stylesheet";
-        "media", "screen";
-        "type" , "text/css";
-        "href" , "/css/bootstrap-responsive.min.css"
-      ] empty;
-      link ~attrs:[
-        "rel" , "stylesheet";
-        "href", "/css/site.css"
-      ] empty;
+      link ~rel:"stylesheet" ~media:"screen" ~ty:"text/css"
+        (Uri.of_string "/css/bootstrap.min.css");
+      link ~rel:"stylesheet" ~media:"screen" ~ty:"text/css"
+        (Uri.of_string "/css/bootstrap-responsive.min.css");
+      link ~rel:"stylesheet" (Uri.of_string "/css/site.css");
 
-      script ~src:"/js/jquery-1.9.1.min.js" empty;
-      script ~src:"/js/bootstrap.min.js" empty;
+      script ~src:(Uri.of_string "/js/jquery-1.9.1.min.js") empty;
+      script ~src:(Uri.of_string "/js/bootstrap.min.js") empty;
 
       headers
     ])

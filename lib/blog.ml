@@ -94,7 +94,7 @@ module Entry = struct
 end
 
 (** Entries separated by <hr /> tags *)
-let default_separator = Html.(hr empty)
+let default_separator = Html.hr
 
 (** [to_html ?sep feed entries] renders a series of entries in a feed, separated
     by [sep], defaulting to [default_separator]. *)
