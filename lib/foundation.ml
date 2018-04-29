@@ -71,11 +71,11 @@ end
 module Index = struct
   let t ~top_nav =
     top_nav
-    ++ br empty
+    ++ br
     ++ div ~cls:"row" (
       div ~cls:"large-12 columns" (
         img (Uri.of_string "http://placehold.it/1000x400&amp;text=img")
-        ++ hr empty
+        ++ hr
       ))
 end
 
@@ -119,7 +119,7 @@ module Blog = struct
       );
       footer ~cls:"row" (
         div ~cls:"large-12 columns" (
-          hr empty
+          hr
           ++ div ~cls:"row" (
             div ~cls:"large-6 columns" (
               p (small (string "&copy; Copyright " ++ copyright))
@@ -135,15 +135,15 @@ let body ?google_analytics ?highlight ~title:t ~headers ~content ~trailers () =
   let highlight_css, highlight_trailer = match highlight with
     | None       -> empty, empty
     | Some style ->
-      link ~attrs:["rel", "stylesheet"; "href", style ] empty,
-      script ~src:"/js/vendor/highlight.pack.js" empty
+      link ~rel:"stylesheet" (Uri.of_string style),
+      script ~src:(Uri.of_string "/js/vendor/highlight.pack.js") empty
       ++ script (string "hljs.initHighlightingOnLoad(); ")
   in
   let ga =
     match google_analytics with
     | None        -> []
     | Some (a, d) ->
-      script ~typ:"text/javascript" (
+      script ~ty:"text/javascript" (
         string @@ Printf.sprintf
           "//<![CDATA[\n\
            var _gaq = _gaq || [];\n\
@@ -163,21 +163,21 @@ let body ?google_analytics ?highlight ~title:t ~headers ~content ~trailers () =
            //]]>" a d)
   in
   head (list [
-      meta ~attrs:["charset","utf-8"] empty;
-      meta ~attrs:["name","viewport"; "content","width=device-width"] empty;
+      meta ["charset","utf-8"];
+      meta ["name","viewport"; "content","width=device-width"];
       title (string t);
-      link ~attrs:["rel","stylesheet"; "href","/css/foundation.min.css"] empty;
-      link ~attrs:["rel","stylesheet"; "href","/css/site.css"] empty;
-      script ~src:"/js/vendor/custom.modernizr.js" empty;
+      link ~rel:"stylesheet" (Uri.of_string "/css/foundation.min.css");
+      link ~rel:"stylesheet" (Uri.of_string "/css/site.css");
+      script ~src:(Uri.of_string "/js/vendor/custom.modernizr.js") empty;
       highlight_css;
       ga;
       headers;
     ])
   ++ body (list [
       content;
-      script ~src:"/js/vendor/jquery.min.js" empty;
-      script ~src:"/js/foundation/foundation.min.js" empty;
-      script ~src:"/js/foundation/foundation.topbar.js" empty;
+      script ~src:(Uri.of_string "/js/vendor/jquery.min.js") empty;
+      script ~src:(Uri.of_string "/js/foundation/foundation.min.js") empty;
+      script ~src:(Uri.of_string "/js/foundation/foundation.topbar.js") empty;
       script js_init;
       highlight_trailer;
       trailers
