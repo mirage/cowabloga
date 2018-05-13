@@ -6,3 +6,5 @@ dist/
 *.byte
 *.merlin
 *.install
+_opam
+.envrc
