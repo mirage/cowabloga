@@ -14,7 +14,7 @@ build-test: [["jbuilder" "runtest" "-p" name "-j" jobs]]
 
 depends: [
   "re" {>= "1.7.2"}
-  "cow" {>= "2.0.0"}
+  "cow" {>= "2.3.0"}
   "omd" {>= "0.8.2"}
   "lwt" {>= "2.4.3"}
   "cstruct" {>= "1.0.1"}
