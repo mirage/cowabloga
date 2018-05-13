@@ -1,3 +1,8 @@
+## 0.4.0 (2018-05-13)
+
+* support cow 2.3.0 (#34, @samoht)
+* support re 1.7.2 (#32, @rgrinberg)
+
 ## 0.3.0 (2017-05-16)
 
 * add a LICENSE file
