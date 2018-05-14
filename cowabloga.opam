@@ -6,6 +6,7 @@ tags:         "org:mirage"
 dev-repo:     "https://github.com/mirage/cowabloga.git"
 homepage:     "https://github.com/mirage/cowabloga"
 bug-reports:  "https://github.com/mirage/cowabloga/issues"
+doc:          "https://mirage.github.io/cowabloga/"
 
 build: [
   ["jbuilder" "build" "-p" name "-j" jobs]
