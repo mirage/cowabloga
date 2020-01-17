@@ -23,7 +23,7 @@ build: [
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
 dev-repo: "git+https://github.com/mirage/cowabloga.git"
-synopsis: "simple static blogging support"
+synopsis: "Simple static blogging support"
 description: """
 Helper OCaml libraries for setting up a blog and wiki, using the Zurb
 Foundation CSS/HTML templates.
