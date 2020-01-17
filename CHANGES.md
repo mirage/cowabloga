@@ -1,3 +1,8 @@
+## 0.5.0 (2020-01-10)
+
+* upgrade to dune from jbuilder (@avsm)
+* update to opam 2 metadata format (@avsm)
+
 ## 0.4.0 (2018-05-13)
 
 * support cow 2.3.0 (#34, @samoht)
