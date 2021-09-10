@@ -96,12 +96,16 @@ end
 (** Entries separated by <hr /> tags *)
 let default_separator = Html.hr
 
-(** [to_html ?sep feed entries] renders a series of entries in a feed, separated
-    by [sep], defaulting to [default_separator]. *)
-let to_html ?(sep=default_separator) ~feed ~entries =
+(** [to_html sep feed entries] renders a series of entries in a feed, separated
+    by [sep] when [Some sep] is passed, defaulting to [default_separator] for [None]. *)
+let to_html ~sep ~feed ~entries =
   let rec concat = function
     | [] -> Lwt.return Html.empty
     | hd::tl ->
+      let sep = match sep with
+      | Some s -> s
+      | None -> default_separator
+      in
       Entry.to_html ~feed ~entry:hd >>= fun hd ->
       concat tl >|= fun tl ->
       Html.list [ hd; sep; tl ]

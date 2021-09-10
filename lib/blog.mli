@@ -31,7 +31,7 @@ module Entry : sig
 end
 
 val to_html :
-  ?sep:Cow.Xml.t ->
+  sep:Cow.Xml.t option ->
   feed:Atom_feed.t ->
   entries:Entry.t list ->
   Cow.Xml.t Lwt.t
